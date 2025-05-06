@@ -1,0 +1,20 @@
+.main-container{
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 0px;
+  background-color: #232537;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+}
+.navigator{
+  padding-top: 50px;
+  display: flex;
+  flex-direction: column;
+}
+
+a{
+  color: white;
+  margin-bottom: 40px;
+  font-size: 24px;
+  margin: 10px;
+}

@@ -1,0 +1,41 @@
+h1,h2{
+    margin: 3px;
+}
+.homepage-container{
+    background-color: white;
+    border-radius: 8px;
+    width: 100vw;
+    margin-top: 40px;
+    margin-left: 60px;
+    margin-bottom: 10px;
+    margin-right: 10px;
+    padding: 20px;
+}
+.container{
+    display: flex;
+    flex-direction: row;
+    margin: 12px;
+ 
+    font-family: Arial, Helvetica, sans-serif;
+}
+.left-section{
+    margin-right: 120px;
+}
+.basic-container{
+    padding:20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin-bottom:40px;
+}
+.title-container{
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    align-items: center;
+}
+.box{
+    display: flex;
+    flex-direction: column;
+    width: 320px;
+    text-align: left;
+}
