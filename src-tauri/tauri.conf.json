@@ -13,9 +13,9 @@
     "windows": [
       {
         "title": "EPIA",
-        "width": 800,
-        "height": 600,
-        "fullscreen": true
+        "width": 1280,
+        "height": 720,
+        "fullscreen": false
       }
     ],
     "security": {
