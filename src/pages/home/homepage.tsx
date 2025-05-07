@@ -2,28 +2,29 @@ import "./homepage.css";
 import { useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { useEffect } from "react";
+import { RoomInfos } from "../../utils/types/RoomInfos";
 export const Homepage = () => {
-    const [requirements, setRequirements] = useState(Array<string>());
+    const [requirements, setRequirements] = useState<RoomInfos>();
     useEffect(()=>{
-        const getRequirements = async () => {
-            const response = await invoke("get_requirements") as Array<string>;
+        const getRoomInfos = async () => {
+            const response = await invoke("get_room_infos") as RoomInfos;
             setRequirements(response);
         }
-        getRequirements();
+        getRoomInfos();
     },[])
     return (
         <main className = "homepage-container">
             <div className="container">
                 <section className="left-section">
                     <div className="basic-container">
-                        <h1>Sala 24B</h1>
-                        <p>Estoque</p>
+                        <h1>{requirements?.name_id ?? "carregando"}</h1>
+                        <p>{requirements?.subname}</p>
                     </div>
                     <div className="title-container">
                         <h2>Lista de Requerimentos</h2>
                         <div className="basic-container">
                             <div className="box">
-                                {requirements.map((item, index) => (
+                                {requirements?.equipments.map((item, index) => (
                                     <p>{item}</p>
                                 ))}
                             </div>

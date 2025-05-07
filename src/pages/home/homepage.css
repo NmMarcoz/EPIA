@@ -8,12 +8,11 @@ h1,h2{
     border-radius: 8px;
     width: 89vw;
     padding: 40px;
+    height: 100vh;
 }
 .container{
     display: flex;
-    flex-direction: row;
-    margin: 12px;
- 
+    flex-direction: row; 
     font-family: Arial, Helvetica, sans-serif;
 }
 .left-section{
