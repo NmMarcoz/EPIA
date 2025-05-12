@@ -34,10 +34,19 @@ html, body, #root {
 }
 
 .navigator{
+  
   padding-top: 0px;
   display: flex;
   flex-direction: column;
   color: rgb(255, 176, 86);
+}
+
+.navigator a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+.navigator a.active {
+    background-color: rgba(255, 255, 255, 0.2);
+    font-weight: bold;
 }
 .navigator h1{
   margin-bottom: 3vh;
@@ -49,4 +58,9 @@ a{
   margin-bottom: 40px;
   font-size: 24px;
   margin-right: 20px;
+}
+.search-bar {
+  position: relative;
+  margin-bottom: 20px;
+  max-width: 450px;
 }
