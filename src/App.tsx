@@ -3,11 +3,13 @@ import reactLogo from "./assets/react.svg";
 import { invoke } from "@tauri-apps/api/core";
 import { Homepage } from "./pages/home/homepage";
 import {WebcamCapture} from "./pages/webcam/WebcamModal"
+import {EditPage} from "./pages/edit/editpage"
 import "./App.css";
 
 function App() {
     const [greetMsg, setGreetMsg] = useState("");
     const [name, setName] = useState("");
+    const [currentPage, setCurrentPage] = useState("home");
 
     async function greet() {
         // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
@@ -18,20 +20,39 @@ function App() {
         await invoke("hello_fellas");
     }
 
+    // Função para renderizar a página atual
+    const renderPage = () => {
+        switch (currentPage) {
+            case "home":
+                return <Homepage />;
+            case "edit":
+                return <EditPage />;
+            case "dashboard":
+                return <div>Dashboard (Em desenvolvimento)</div>;
+            default:
+                return <Homepage />;
+        }
+    };
+
     return (
         <div className="main-container">
             <div className="navigator">
                 <h1>EPIAI</h1>
-                <a> Inicio </a>
-                <a> Configurações </a>
-                <a> Dashboard </a>
+                <a onClick={() => setCurrentPage("home")} className={currentPage === "home" ? "active" : ""}>
+                    Inicio
+                </a>
+                <a onClick={() => setCurrentPage("edit")} className={currentPage === "edit" ? "active" : ""}>
+                    Configurações
+                </a>
+                <a onClick={() => setCurrentPage("dashboard")} className={currentPage === "dashboard" ? "active" : ""}>
+                    Dashboard
+                </a>
             </div>
             <div className="app-container">
                 <div className="search-container">
                     <input type="text" name="" id="" placeholder="pesquisar" />
                 </div>
-                <Homepage />
-                
+                {renderPage()}
             </div>
         </div>
     );
