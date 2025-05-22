@@ -3,6 +3,7 @@ import { useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { useEffect } from "react";
 import { RoomInfos } from "../../utils/types/RoomInfos";
+import { WebcamCapture } from "../webcam/WebcamModal";
 export const Homepage = () => {
     const [requirements, setRequirements] = useState<RoomInfos>();
     useEffect(()=>{
@@ -35,7 +36,7 @@ export const Homepage = () => {
                     <div>
                         <h2>José Velares</h2>
                         <div className="basic-container">
-                            <h2>teste</h2>
+                            <WebcamCapture/>
                         </div>
                     </div>
                 </section>

@@ -2,6 +2,7 @@ import { useState } from "react";
 import reactLogo from "./assets/react.svg";
 import { invoke } from "@tauri-apps/api/core";
 import { Homepage } from "./pages/home/homepage";
+import {WebcamCapture} from "./pages/webcam/WebcamModal"
 import "./App.css";
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
                     <input type="text" name="" id="" placeholder="pesquisar" />
                 </div>
                 <Homepage />
+                
             </div>
         </div>
     );
