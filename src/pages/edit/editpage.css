@@ -37,7 +37,9 @@
   margin-bottom: 20px;
   border: 1px solid #e0e0e0;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  width: 60vw
+  width: 60vw;
+  max-height: 400px;
+  overflow-y: auto;
 }
 
 .card h2 {
@@ -105,7 +107,7 @@
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  align-self: center;
+  
   margin-top: 20px;
   width: fit-content;
   transition: background-color 0.2s, transform 0.1s;
