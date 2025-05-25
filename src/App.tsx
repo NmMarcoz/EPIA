@@ -2,7 +2,8 @@ import { useState } from "react";
 import reactLogo from "./assets/react.svg";
 import { invoke } from "@tauri-apps/api/core";
 import { Homepage } from "./pages/home/homepage";
-import EditPage from "./pages/edit/editpage";
+import EditPage from "./pages/edit/editpage" // ou { EditPage } se for named export
+import { WebcamCapture } from "./pages/webcam/WebcamModal";
 import "./App.css";
 
 function App() {
@@ -28,6 +29,8 @@ function App() {
                 return <EditPage />;
             case "dashboard":
                 return <div>Dashboard (Em desenvolvimento)</div>;
+            case "webcam":
+                return <WebcamCapture />;
             default:
                 return <Homepage />;
         }
@@ -37,19 +40,39 @@ function App() {
         <div className="main-container">
             <div className="navigator">
                 <h1>EPIAI</h1>
-                <a onClick={() => setCurrentPage("home")} className={currentPage === "home" ? "active" : ""}>
+                <a 
+                    onClick={() => setCurrentPage("home")} 
+                    className={currentPage === "home" ? "active" : ""}
+                >
                     Inicio
                 </a>
-                <a onClick={() => setCurrentPage("edit")} className={currentPage === "edit" ? "active" : ""}>
+                <a 
+                    onClick={() => setCurrentPage("edit")} 
+                    className={currentPage === "edit" ? "active" : ""}
+                >
                     Configurações
                 </a>
-                <a onClick={() => setCurrentPage("dashboard")} className={currentPage === "dashboard" ? "active" : ""}>
+                <a 
+                    onClick={() => setCurrentPage("dashboard")} 
+                    className={currentPage === "dashboard" ? "active" : ""}
+                >
                     Dashboard
+                </a>
+                <a 
+                    onClick={() => setCurrentPage("webcam")} 
+                    className={currentPage === "webcam" ? "active" : ""}
+                >
+                    Webcam
                 </a>
             </div>
             <div className="app-container">
                 <div className="search-container">
-                    <input type="text" name="" id="" placeholder="pesquisar" />
+                    <input 
+                        type="text" 
+                        name="" 
+                        id="" 
+                        placeholder="pesquisar" 
+                    />
                 </div>
                 {renderPage()}
             </div>
