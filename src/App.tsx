@@ -39,7 +39,7 @@ function App() {
     return (
         <div className="main-container">
             <div className="navigator">
-                <h1>EPIAI</h1>
+                <h1>EPIA</h1>
                 <a 
                     onClick={() => setCurrentPage("home")} 
                     className={currentPage === "home" ? "active" : ""}
@@ -50,7 +50,7 @@ function App() {
                     onClick={() => setCurrentPage("edit")} 
                     className={currentPage === "edit" ? "active" : ""}
                 >
-                    Configurações
+                    Editar
                 </a>
                 <a 
                     onClick={() => setCurrentPage("dashboard")} 
@@ -66,6 +66,7 @@ function App() {
                 </a>
             </div>
             <div className="app-container">
+                
                 <div className="search-container">
                     <input 
                         type="text" 
