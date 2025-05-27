@@ -58,12 +58,12 @@ function App() {
                 >
                     Dashboard
                 </a>
-                <a 
+                {/* <a 
                     onClick={() => setCurrentPage("webcam")} 
                     className={currentPage === "webcam" ? "active" : ""}
                 >
                     Webcam
-                </a>
+                </a> */}
             </div>
             <div className="app-container">
                 <div className="search-container">
