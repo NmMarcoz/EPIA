@@ -1,4 +1,6 @@
 use serde::Serialize;
+mod controllers;
+use controllers::external_scripts;
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 #[tauri::command]
 fn greet(name: &str) -> String {
@@ -41,7 +43,8 @@ pub fn run() {
             greet, 
             hello_fellas, 
             get_requirements,
-            get_room_infos
+            get_room_infos,
+            external_scripts::run_python_dashboard
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
