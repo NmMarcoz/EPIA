@@ -5,6 +5,7 @@ import { Homepage } from "./pages/home/homepage";
 import EditPage from "./pages/edit/editpage" // ou { EditPage } se for named export
 import { WebcamCapture } from "./pages/webcam/WebcamModal";
 import "./App.css";
+import DashboardPage from "./pages/dashboard/DashboardPage";
 
 function App() {
     const [greetMsg, setGreetMsg] = useState("");
@@ -28,7 +29,7 @@ function App() {
             case "edit":
                 return <EditPage />;
             case "dashboard":
-                return <div>Dashboard (Em desenvolvimento)</div>;
+                return <DashboardPage/>;
             case "webcam":
                 return <WebcamCapture />;
             default:

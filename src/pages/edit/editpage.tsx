@@ -3,6 +3,7 @@
 import { useState } from "react";
 import "../../globals.css";
 import "./editpage.css";
+import { invoke } from "@tauri-apps/api/core";
 
 const EditPage = () => {
     const [roomName, setRoomName] = useState("Sala 24b");
@@ -12,6 +13,8 @@ const EditPage = () => {
         "Capacete",
         "Abafador",
     ]);
+
+
 
     const handleAddItem = () => {
         setRequirements([...requirements, ""]);
@@ -56,12 +59,12 @@ const EditPage = () => {
                             onChange={(e) => setRoomFunction(e.target.value)}
                         />
                     </div>
-                    <button
-                            className="add-button"
-                            onClick={handleSaveChanges}
-                        >
-                            Salvar Mudanças
-                        </button>
+                    <button className="add-button" onClick={handleSaveChanges}>
+                        Salvar Mudanças
+                    </button>
+                    <button className="add-button" onClick={async()=>runDashboard()}>
+                        Rodar Script
+                    </button>
                 </div>
                 <div className="card requirements-card">
                     <div className="requirements-header">

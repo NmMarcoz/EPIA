@@ -35,6 +35,14 @@ fn get_requirements()-> Vec<&'static str> {
     return Vec::from(s);
 }
 
+#[tauri::command]
+fn run_external_script()->String{
+    println!("entrou aqui");
+    let result = external_scripts::run_python_dashboard();
+    println!("{}", result);
+    return String::from(result);
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
@@ -44,7 +52,7 @@ pub fn run() {
             hello_fellas, 
             get_requirements,
             get_room_infos,
-            external_scripts::run_python_dashboard
+            run_external_script
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
