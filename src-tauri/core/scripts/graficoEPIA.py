@@ -266,7 +266,7 @@ def atualizar_tudo(n_clicks, matricula_digitada, areas_selecionadas, start_date,
     disabled = True
 
     df = pd.read_excel(
-        "../database/dados_epi.xlsx",
+        "core/scripts/database/dados_epi.xlsx",
         engine="openpyxl"
     )
 
