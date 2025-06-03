@@ -7,6 +7,7 @@ import EditPage from "./pages/edit/editpage"
 import { WebcamCapture } from "./pages/webcam/WebcamModal"
 import Acess from "./pages/acess/Acess"
 import "./App.css"
+import DashboardPage from "./pages/dashboard/DashboardPage"
 
 interface User {
   id: number | string
@@ -70,7 +71,7 @@ function App() {
       case "edit":
         return <EditPage />
       case "dashboard":
-        return <div>Dashboard (Em desenvolvimento)</div>
+        return <DashboardPage/>
       case "webcam":
         return <WebcamCapture />
       default:

@@ -13,6 +13,11 @@ export const Homepage = () => {
             setRequirements(response);
         };
         getRoomInfos();
+        const ip_response = async()=>{
+            return await invoke("show_ip");
+        }
+        console.log("ip response", ip_response());
+        
     }, []);
     return (
         <div className="container">

@@ -1,6 +1,12 @@
-use serde::Serialize;
+use std::collections::HashMap;
+
+use serde::{Deserialize, Serialize};
 mod controllers;
 use controllers::external_scripts;
+use reqwest;
+mod utils;
+use utils::jsonutils;
+
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 #[tauri::command]
 fn greet(name: &str) -> String {
@@ -43,6 +49,24 @@ fn run_external_script()->String{
     return String::from(result);
 }
 
+#[derive(Serialize, Deserialize)]
+struct ipResponse{
+    origin: String
+}
+
+#[tauri::command]
+async fn show_ip() -> Result<ipResponse, String> {
+    let resp = reqwest::get("https://httpbin.org/ip").await.map_err(|e| e.to_string())?;
+    
+    if !resp.status().is_success() {
+        return Err(format!("Erro: status code {}", resp.status()));
+    }
+
+    let ip_data: ipResponse = resp.json().await.map_err(|e| e.to_string())?;
+    jsonutils::pretty_json(&ip_data);
+    Ok(ip_data)
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
@@ -52,7 +76,8 @@ pub fn run() {
             hello_fellas, 
             get_requirements,
             get_room_infos,
-            run_external_script
+            run_external_script,
+            show_ip
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
