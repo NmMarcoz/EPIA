@@ -2,7 +2,9 @@ use reqwest;
 use serde::{Deserialize, Serialize};
 use crate::utils;
 
-const BASE_URL: &str = "localhost:3000";
+//const BASE_URL: &str = "https://r97rgdpr-3000.brs.devtunnels.ms";
+
+const BASE_URL: &str = "http://localhost:3000";
 
 #[derive(Debug)]
 pub enum ApiError {
@@ -20,14 +22,17 @@ impl From<reqwest::Error> for ApiError {
 pub struct Worker {
     id: String,
     name: String,
-    registration_number: String,
+    registrationNumber: String,
     email: String,
     function: String,
-    card_id: String
+    cardId: String
 }
 
 pub async fn get_worker(card_id: String) -> Result<Worker, ApiError> {
-    let resp = reqwest::get(format!("{}/workers/card_id/{}", BASE_URL, card_id))
+    println!("Iniciando busca do worker com card_id: {}", card_id);
+    let url = format!("{}/workers/cardId/{}", BASE_URL, card_id);
+    println!("{}", url);
+    let resp = reqwest::get(url)
         .await?;
     
     let worker: Worker = resp.json()

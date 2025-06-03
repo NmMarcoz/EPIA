@@ -73,6 +73,7 @@ async fn show_ip() -> Result<ipResponse, String> {
 // ... outros imports ...
 #[tauri::command]
 async fn get_worker_by_card_id(card_id: String) -> Result<Worker, String> {
+    println!("Iniciando busca do worker com card_id: {}", card_id);
     get_worker(card_id)
         .await
         .map_err(|e| match e {
