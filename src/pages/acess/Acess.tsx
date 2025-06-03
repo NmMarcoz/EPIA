@@ -67,9 +67,7 @@ const Acess: React.FC<AccessProps> = ({ onLoginSuccess }) => {
     setIsLoading(true)
 
     try {
-      // Simulação de autenticação - substituir por API real
-      await new Promise((resolve) => setTimeout(resolve, 1500))
-
+  
       // Validação temporária para teste
       if (email === "admin@epia.com" && password === "admin123") {
         const adminUser: User = {
@@ -80,8 +78,8 @@ const Acess: React.FC<AccessProps> = ({ onLoginSuccess }) => {
         }
 
         // Salvar no localStorage para persistência
-        localStorage.setItem("epiaUser", JSON.stringify(adminUser))
-        localStorage.setItem("epiaAuthToken", "admin_token_" + Date.now())
+        // localStorage.setItem("epiaUser", JSON.stringify(adminUser))
+        // localStorage.setItem("epiaAuthToken", "admin_token_" + Date.now())
 
         onLoginSuccess(adminUser)
       } else {

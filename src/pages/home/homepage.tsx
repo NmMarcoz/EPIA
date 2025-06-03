@@ -4,8 +4,14 @@ import { invoke } from "@tauri-apps/api/core";
 import { useEffect } from "react";
 import { RoomInfos } from "../../utils/types/RoomInfos";
 import { WebcamCapture } from "../webcam/WebcamModal";
+import { Worker } from "../../utils/types/EpiaTypes.ts";
 import "../../globals.css";
-export const Homepage = () => {
+
+interface HomePageProps {
+    worker: Worker,
+}
+
+export const Homepage = (props: HomePageProps) => {
     const [requirements, setRequirements] = useState<RoomInfos>();
     useEffect(() => {
         const getRoomInfos = async () => {
@@ -13,11 +19,6 @@ export const Homepage = () => {
             setRequirements(response);
         };
         getRoomInfos();
-        const ip_response = async()=>{
-            return await invoke("show_ip");
-        }
-        console.log("ip response", ip_response());
-        
     }, []);
     return (
         <div className="container">
@@ -38,11 +39,11 @@ export const Homepage = () => {
                                     <div>
                                         <div className="employee-info">
                                             <a>Nome</a>
-                                            <h2>José Velares</h2>
+                                            <h2>{props?.worker?.name || "carregando"}</h2>
                                         </div>
                                         <div className="employee-info">
                                             <a>Cargo</a>
-                                            <h2>Operador de Máquina</h2>
+                                            <h2>{props?.worker?.function || "carregando"}</h2>
                                         </div>
                                         <div className="employee-info">
                                             <a>Taxa de Esquecimento de EPI</a>
@@ -68,7 +69,7 @@ export const Homepage = () => {
                             <div className="basic-container">
                                 <div className="box">
                                     {requirements?.equipments.map(
-                                        (item, index) => (
+                                        (item) => (
                                             <p>{item}</p>
                                         )
                                     )}

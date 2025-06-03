@@ -8,6 +8,7 @@ import { WebcamCapture } from "./pages/webcam/WebcamModal"
 import Acess from "./pages/acess/Acess"
 import "./App.css"
 import DashboardPage from "./pages/dashboard/DashboardPage"
+import { Worker } from "./utils/types/EpiaTypes.ts";
 
 interface User {
   id: number | string
@@ -18,29 +19,24 @@ interface User {
 }
 
 function App() {
-  const [greetMsg, setGreetMsg] = useState("")
-  const [name, setName] = useState("")
   const [currentPage, setCurrentPage] = useState("home")
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [currentUser, setCurrentUser] = useState<User | null>(null)
-
+  const [cardId, setCardId] = useState("");
+  const [worker, setWorker] = useState<Worker>();
   // Verificar se há usuário logado ao inicializar
-  useEffect(() => {
-    const savedUser = localStorage.getItem("epiaUser")
-    const authToken = localStorage.getItem("epiaAuthToken")
 
-    if (savedUser && authToken) {
-      try {
-        const user: User = JSON.parse(savedUser)
-        setCurrentUser(user)
-        setIsAuthenticated(true)
-      } catch (error) {
-        console.error("Erro ao recuperar usuário:", error)
-        localStorage.removeItem("epiaUser")
-        localStorage.removeItem("epiaAuthToken")
-      }
-    }
-  }, [])
+
+  const handleWorker = async()=>{
+    console.log("começando....");
+    setCardId("010102031");
+    console.log("cardId", cardId);
+    const worker = await invoke("get_worker_by_card_id", {
+      cardId: "010102031"
+    }) as Worker;
+    console.log("worker", worker);
+    setWorker(worker);
+  }
 
   // async function greet() {
   //   setGreetMsg(await invoke("greet", { name }))
@@ -50,16 +46,21 @@ function App() {
   //   await invoke("hello_fellas")
   // }
 
-  const handleLoginSuccess = (user: User) => {
-    setCurrentUser(user)
-    setIsAuthenticated(true)
-    setCurrentPage("home")
-  }
-
+  const handleLoginSuccess = async () => {
+   
+    try {
+        console.log("handle login");
+        await handleWorker(); // espera a função terminar
+        setIsAuthenticated(true);
+        setCurrentPage("home");
+    } catch (error) {
+        console.error("Erro ao buscar worker:", error);
+        // Você pode decidir se ainda quer autenticar mesmo com erro
+        setIsAuthenticated(false);
+        setCurrentPage("home");
+    }
+}
   const handleLogout = () => {
-    localStorage.removeItem("epiaUser")
-    localStorage.removeItem("epiaAuthToken")
-    setCurrentUser(null)
     setIsAuthenticated(false)
   }
 
@@ -67,7 +68,7 @@ function App() {
   const renderPage = () => {
     switch (currentPage) {
       case "home":
-        return <Homepage />
+        return <Homepage worker={worker!}/>
       case "edit":
         return <EditPage />
       case "dashboard":
@@ -75,13 +76,13 @@ function App() {
       case "webcam":
         return <WebcamCapture />
       default:
-        return <Homepage />
+        return <Homepage worker={worker!}/>
     }
   }
 
   // Se não estiver autenticado, mostrar tela de acesso
   if (!isAuthenticated) {
-    return <Acess onLoginSuccess={handleLoginSuccess} />
+    return <Acess onLoginSuccess= {handleLoginSuccess} />
   }
 
   return (
