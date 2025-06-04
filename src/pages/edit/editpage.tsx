@@ -4,34 +4,62 @@ import { useState } from "react";
 import "../../globals.css";
 import "./editpage.css";
 import { invoke } from "@tauri-apps/api/core";
+import { Sector } from "../../utils/types/EpiaTypes";
+import { toast } from "sonner";
 
-const EditPage = () => {
-    const [roomName, setRoomName] = useState("Sala 24b");
-    const [roomFunction, setRoomFunction] = useState("Estoque");
-    const [requirements, setRequirements] = useState([
-        "Botas",
-        "Capacete",
-        "Abafador",
-    ]);
+interface EditPageProps {
+    sector: Sector;
+    onSectorUpdate?: (updatedSector: Sector) => void;
+}
 
-
-
-    const handleAddItem = () => {
-        setRequirements([...requirements, ""]);
+const EditPage = (props: EditPageProps) => {
+    const [sectorData, setSectorData] = useState<Sector>({
+        ...props.sector
+    });
+    
+    const handleInputChange = (field: keyof Sector, value: string | string[]) => {
+        setSectorData(prev => ({
+            ...prev,
+            [field]: value
+        }));
     };
 
     const handleRequirementChange = (index: number, value: string) => {
-        const newRequirements = [...requirements];
-        newRequirements[index] = value;
-        setRequirements(newRequirements);
+        const newRules = [...sectorData.rules];
+        newRules[index] = value;
+        handleInputChange('rules', newRules);
     };
 
-    const handleSaveChanges = () => {
-        console.log({
-            nome: roomName,
-            funcao: roomFunction,
-            requisitos: requirements,
-        });
+    const handleAddRequirement = () => {
+        handleInputChange('rules', [...sectorData.rules, '']);
+    };
+
+    const handleRemoveRequirement = (index: number) => {
+        const newRules = sectorData.rules.filter((_, i) => i !== index);
+        handleInputChange('rules', newRules);
+    };
+
+    const handleSaveChanges = async () => {
+        try {
+            const updates: Record<string, any> = {
+                name: sectorData.name, // Sempre envie o name
+                rules: sectorData.rules // Sempre envie as rules
+            };
+
+            const updatedSector = await invoke<Sector>('update_sector', {
+                code: props.sector.code,
+                sector: updates
+            });
+
+            toast.success('Setor atualizado com sucesso!');
+            
+            if (props.onSectorUpdate) {
+                props.onSectorUpdate(updatedSector);
+            }
+        } catch (error) {
+            console.error('Erro ao atualizar setor:', error);
+            toast.error('Erro ao salvar alterações');
+        }
     };
 
     return (
@@ -47,25 +75,21 @@ const EditPage = () => {
                         <label>Nome</label>
                         <input
                             type="text"
-                            value={roomName}
-                            onChange={(e) => setRoomName(e.target.value)}
+                            value={sectorData.name}
+                            onChange={(e) => handleInputChange('name', e.target.value)}
                         />
                     </div>
                     <div className="form-group">
-                        <label>Função</label>
+                        <label>Código</label>
                         <input
                             type="text"
-                            value={roomFunction}
-                            onChange={(e) => setRoomFunction(e.target.value)}
+                            value={sectorData.code}
+                            disabled
+                            className="disabled-input"
                         />
                     </div>
-                    <button className="add-button" onClick={handleSaveChanges}>
-                        Salvar Mudanças
-                    </button>
-                    <button className="add-button" onClick={async()=>runDashboard()}>
-                        Rodar Script
-                    </button>
                 </div>
+
                 <div className="card requirements-card">
                     <div className="requirements-header">
                         <h2>Editar Requisitos</h2>
@@ -75,28 +99,36 @@ const EditPage = () => {
                         </p>
                     </div>
                     <div className="requirements-container">
-                        {requirements.map((req, index) => (
-                            <div className="form-group" key={index}>
+                        {sectorData.rules.map((rule, index) => (
+                            <div className="form-group requirement-item" key={index}>
                                 <label>Item {index + 1}</label>
-                                <input
-                                    type="text"
-                                    value={req}
-                                    onChange={(e) =>
-                                        handleRequirementChange(
-                                            index,
-                                            e.target.value
-                                        )
-                                    }
-                                />
+                                <div className="requirement-input-group">
+                                    <input
+                                        type="text"
+                                        value={rule}
+                                        onChange={(e) =>
+                                            handleRequirementChange(index, e.target.value)
+                                        }
+                                    />
+                                    <button 
+                                        className="remove-button"
+                                        onClick={() => handleRemoveRequirement(index)}
+                                    >
+                                        Remover
+                                    </button>
+                                </div>
                             </div>
                         ))}
                     </div>
                     <div className="button-container">
-                        <button className="add-button" onClick={handleAddItem}>
+                        <button 
+                            className="add-button"
+                            onClick={handleAddRequirement}
+                        >
                             Adicionar Item
                         </button>
                         <button
-                            className="add-button"
+                            className="save-button"
                             onClick={handleSaveChanges}
                         >
                             Salvar Mudanças

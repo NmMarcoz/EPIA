@@ -1,31 +1,22 @@
 import "./homepage.css";
-import { useState } from "react";
-import { invoke } from "@tauri-apps/api/core";
-import { useEffect } from "react";
-import { RoomInfos } from "../../utils/types/RoomInfos";
+
 import { WebcamCapture } from "../webcam/WebcamModal";
-import { Worker } from "../../utils/types/EpiaTypes.ts";
+import { Worker, Sector } from "../../utils/types/EpiaTypes.ts";
 import "../../globals.css";
 
 interface HomePageProps {
     worker: Worker,
+    sector:Sector
 }
 
 export const Homepage = (props: HomePageProps) => {
-    const [requirements, setRequirements] = useState<RoomInfos>();
-    useEffect(() => {
-        const getRoomInfos = async () => {
-            const response = (await invoke("get_room_infos")) as RoomInfos;
-            setRequirements(response);
-        };
-        getRoomInfos();
-    }, []);
+
     return (
         <div className="container">
             <div className="homepage-container">
                 <div className="header">
-                    <h2>{requirements?.name_id ?? "carregando"}</h2>
-                    <p>{requirements?.subname}</p>
+                    <h2>{props.sector?.code ?? "carregando"}</h2>
+                    <p>{props.sector?.name ?? "carregando"}</p>
                 </div>
                 <div className="section-container">
                     <section className="right-section">
@@ -68,8 +59,8 @@ export const Homepage = (props: HomePageProps) => {
                         <div className="title-container">
                             <div className="basic-container">
                                 <div className="box">
-                                    {requirements?.equipments.map(
-                                        (item) => (
+                                    {props.sector?.rules.map(
+                                        (item, index) => (
                                             <p>{item}</p>
                                         )
                                     )}

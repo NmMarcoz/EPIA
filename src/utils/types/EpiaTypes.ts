@@ -4,5 +4,12 @@ export type Worker = {
     registrationNumber:string,
     email:string,
     function:string,
-    cardId:string
+    cardId:string,
+    type: string
+}
+
+export type Sector = {
+    code: string,
+    name:string,
+    rules: string[]
 }
