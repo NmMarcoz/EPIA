@@ -38,6 +38,12 @@ fn get_requirements() -> Vec<&'static str> {
     return Vec::from(s);
 }
 
+#[tauri::command]
+fn run_ia()->(){
+    println!("entrou no run ia");
+    external_scripts::run_ia();
+}
+
 #[derive(Serialize, Deserialize)]
 pub struct SectorUpdate {
     pub name: Option<String>,
@@ -112,7 +118,8 @@ pub fn run() {
             run_external_script,
             show_ip,
             get_worker_by_card_id,
-            update_sector
+            update_sector,
+            run_ia
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

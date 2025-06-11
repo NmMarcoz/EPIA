@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./WebcamModal.css";
 import Webcam from "react-webcam";
+import { invoke } from "@tauri-apps/api/core";
 
 export const WebcamCapture = () => {
     const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
@@ -17,7 +18,8 @@ export const WebcamCapture = () => {
             <button
                 onClick={async () => {
                     console.log("clicou");
-                    setIsModalOpen(true);
+                    await invoke("run_ia")
+                   // setIsModalOpen(true);
                 }}
             >
                 Abrir Webcam
