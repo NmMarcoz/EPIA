@@ -1,0 +1,81 @@
+/* assets/style.css */
+
+/* CSS Responsivo */
+@media (max-width: 900px) {
+    #grid-container {
+        grid-template-columns: 1fr !important;
+    }
+    #grid-container > div {
+        grid-column: span 1 !important;
+    }
+}
+
+/* Melhorias na tabela para mobile */
+@media (max-width: 600px) {
+    .dash-table-container .dash-spreadsheet-container {
+        overflow-x: auto;
+        width: 100%;
+    }
+}
+
+/* Melhorias gerais de UX */
+.dash-dropdown .Select-control {
+    background-color: #2e2e2e !important;
+    border-color: #333333 !important;
+}
+
+.dash-dropdown .Select-menu-outer {
+    background-color: #2e2e2e !important;
+    border-color: #333333 !important;
+}
+
+.dash-dropdown .Select-option {
+    background-color: #2e2e2e !important;
+    color: #e0e0e0 !important;
+}
+
+.dash-dropdown .Select-option:hover {
+    background-color: #4dabf7 !important;
+}
+
+/* Estilização do DatePickerRange */
+.DateRangePickerInput {
+    background-color: #2e2e2e !important;
+    border: 1px solid #333333 !important;
+}
+
+.DateInput_input {
+    background-color: #2e2e2e !important;
+    color: #e0e0e0 !important;
+    border: none !important;
+}
+
+/* Scrollbar personalizada */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #1e1e1e;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #4dabf7;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #339af0;
+}
+
+/* Animações suaves */
+* {
+    transition: all 0.2s ease-in-out;
+}
+
+/* Hover effects para cards */
+.card-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(77, 171, 247, 0.2) !important;
+}
