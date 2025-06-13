@@ -60,8 +60,6 @@ function App() {
         setCurrentPage("edit");
     }
 
-
-
     const handleLogout = () => {
         setIsAuthenticated(false);
     };
@@ -76,7 +74,7 @@ function App() {
                 return (
                     <EditPage
                         sector={sector!}
-                        onSectorUpdate={() => getRoomInfos()}
+                        onSectorUpdate={() => epiaProvider.getSectorByCode(sector?.code!)}
                     />
                 );
             case "dashboard":

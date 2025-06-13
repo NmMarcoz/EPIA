@@ -2,8 +2,8 @@ import axios from 'axios';
 import { Sector, Worker } from '../../utils/types/EpiaTypes';
 
 const epiaServer = axios.create({
-    baseURL: 'http://localhost:3000', // URL do servidor EPIA
-    timeout: 5000, // Tempo limite de 5 segundos
+    baseURL: 'http://localhost:3000', 
+    timeout: 5000, 
 })
 
 export const getWorkerByCardId = async(cardId: string): Promise<Worker> => {
