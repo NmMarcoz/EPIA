@@ -9,7 +9,9 @@ import Acess from "./pages/acess/Acess";
 import "./App.css";
 import DashboardPage from "./pages/dashboard/DashboardPage";
 import { Sector, Worker } from "./utils/types/EpiaTypes.ts";
-import {Toaster, toast} from "sonner";
+import { Toaster, toast } from "sonner";
+import * as epiaProvider from "./infra/providers/EpiaServerProvider.ts";
+import { Setores } from "./pages/setores/Setores.tsx";
 
 function App() {
     const [currentPage, setCurrentPage] = useState("home");
@@ -18,39 +20,47 @@ function App() {
     const [worker, setWorker] = useState<Worker>();
     const [user, setUser] = useState<Worker | undefined>();
     const [sector, setSector] = useState<Sector>();
-    const handleWorker = async ():Promise<Worker> => {
+    const [sectorCode, setSectorCode] = useState<string>("");
+    const handleWorker = async (): Promise<Worker> => {
         console.log("começando....");
         setCardId("010102031");
         console.log("cardId", cardId);
-        const worker = await invoke("get_worker_by_card_id", {
-            cardId: "010102031",
-        }) as Worker;
+        const worker = (await epiaProvider.getWorkerByCardId(cardId)) as Worker;
         console.log("worker", worker);
         setWorker(worker);
         return worker;
     };
-    const getRoomInfos = async()=>{
-        const response = await invoke("get_room_infos", {code: "STD06"}) as Sector;
+    const getRoomInfos = async () => {
+        const response = (await invoke("get_room_infos", {
+            code: "STD06",
+        })) as Sector;
         setSector(response);
-    }
+    };
 
     const handleLoginSuccess = async () => {
         try {
             console.log("handle login");
-            await handleWorker()
+            await handleWorker();
             console.log("worker", worker);
 
             await getRoomInfos();
-            toast.success("autenticado!")
+            toast.success("autenticado!");
             setIsAuthenticated(true);
             setCurrentPage("home");
         } catch (error) {
             console.error("Erro ao buscar worker:", error);
-            toast.error('falha ao autenticar');
+            //toast.error('falha ao autenticar');
             setIsAuthenticated(false);
             setCurrentPage("home");
         }
     };
+
+    const handleConfigPage = (sector:Sector)=>{
+        setSector(sector);
+        setCurrentPage("edit");
+    }
+
+
 
     const handleLogout = () => {
         setIsAuthenticated(false);
@@ -60,38 +70,66 @@ function App() {
         switch (currentPage) {
             case "home":
                 return <Homepage worker={worker!} sector={sector!} />;
+            case "setores":
+                return <Setores handleSectorClick={handleConfigPage} />
             case "edit":
-                return <EditPage sector={sector!} onSectorUpdate={()=>getRoomInfos()}/>;
+                return (
+                    <EditPage
+                        sector={sector!}
+                        onSectorUpdate={() => getRoomInfos()}
+                    />
+                );
             case "dashboard":
                 return <DashboardPage />;
             case "webcam":
                 return <WebcamCapture />;
             default:
-                return <Acess handleWorker={handleWorker}/>;
+                return <Acess handleWorker={handleWorker} />;
         }
     };
 
     if (!isAuthenticated) {
-        return <Acess onLoginSuccess={handleLoginSuccess} handleWorker={handleWorker} />;
+        return (
+            <Acess
+                onLoginSuccess={handleLoginSuccess}
+                handleWorker={handleWorker}
+            />
+        );
     }
 
     return (
         <div className="main-container">
-            {/* Adicione o Toaster aqui (pode ser no início ou no fim do JSX) */}
             <Toaster position="bottom-right" />
 
             <div className="navigator">
                 <h1>EPIAI</h1>
-                <a onClick={() => setCurrentPage("home")} className={currentPage === "home" ? "active" : ""}>
+                <a
+                    onClick={() => setCurrentPage("home")}
+                    className={currentPage === "home" ? "active" : ""}
+                >
                     Inicio
                 </a>
                 {worker?.type === "admin" && (
-                    <a onClick={() => setCurrentPage("edit")} className={currentPage === "edit" ? "active" : ""}>
+                    <a
+                        onClick={() => setCurrentPage("setores")}
+                        className={currentPage === "setores" ? "active" : ""}
+                    >
+                        Setores
+                    </a>
+                )}
+                {worker?.type === "admin" && (
+                    <a
+                        onClick={() => setCurrentPage("edit")}
+                        className={currentPage === "edit" ? "active" : ""}
+                    >
                         Configurações
                     </a>
                 )}
                 {worker?.type === "admin" && (
-                    <a onClick={() => setCurrentPage("dashboard")} className={currentPage === "dashboard" ? "active" : ""}>
+                    <a
+                        onClick={() => setCurrentPage("dashboard")}
+                        className={currentPage === "dashboard" ? "active" : ""}
+                    >
                         Dashboard
                     </a>
                 )}

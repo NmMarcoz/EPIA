@@ -9,6 +9,7 @@ export type Worker = {
 }
 
 export type Sector = {
+    id:string,
     code: string,
     name:string,
     rules: string[]

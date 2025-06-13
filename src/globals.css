@@ -1,3 +1,7 @@
+html, body {
+    overflow: hidden;
+}
+
 .container{
     height: 85vh;
     width: 85vw;

@@ -67,8 +67,13 @@ const Acess: React.FC<AccessProps> = ({ onLoginSuccess, handleWorker }) => {
         setIsLoading(true);
 
         setTimeout(async () => {
-            const worker = await handleWorker!();
-            onLoginSuccess!(worker);
+            const worker = await handleWorker!().catch((error) => {
+                console.error("Erro ao buscar trabalhador:", error);
+                toast.error("Falha ao autenticar, verifique o cartão");
+                setIsLoading(false);
+                return;
+            });
+            onLoginSuccess!(worker!);
 
             setIsLoading(false);
         }, 1000);
@@ -78,7 +83,7 @@ const Acess: React.FC<AccessProps> = ({ onLoginSuccess, handleWorker }) => {
     return (
         <div className="access-container">
             {/* Sidebar */}
-            <Toaster position="bottom-right" />
+            <Toaster position="top-right" />
             <div className="sidebar">
                 <div className="sidebar-header">
                     <h2 className="sidebar-title">EPIA</h2>
