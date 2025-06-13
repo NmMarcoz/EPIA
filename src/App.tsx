@@ -23,7 +23,7 @@ function App() {
         setCardId("010102031");
         console.log("cardId", cardId);
         const worker = await invoke("get_worker_by_card_id", {
-            cardId: "010102031",
+            cardId: "   ",
         }) as Worker;
         console.log("worker", worker);
         setWorker(worker);
@@ -56,20 +56,21 @@ function App() {
         setIsAuthenticated(false);
     };
 
-    const renderPage = () => {
-        switch (currentPage) {
-            case "home":
-                return <Homepage worker={worker!} sector={sector!} />;
-            case "edit":
-                return <EditPage sector={sector!} onSectorUpdate={()=>getRoomInfos()}/>;
-            case "dashboard":
-                return <DashboardPage />;
-            case "webcam":
-                return <WebcamCapture />;
-            default:
-                return <Acess handleWorker={handleWorker}/>;
-        }
-    };
+        const renderPage = () => {
+            switch (currentPage) {
+                case "home":
+                    return <Homepage worker={worker!} sector={sector!} />;
+                case "edit":
+                    return <EditPage sector={sector!} onSectorUpdate={()=>getRoomInfos()}/>;
+                case "dashboard":
+                    
+                    return <DashboardPage />;
+                case "webcam":
+                    return <WebcamCapture />;
+                default:
+                    return <Acess handleWorker={handleWorker}/>;
+            }
+        };
 
     if (!isAuthenticated) {
         return <Acess onLoginSuccess={handleLoginSuccess} handleWorker={handleWorker} />;
@@ -85,12 +86,12 @@ function App() {
                 <a onClick={() => setCurrentPage("home")} className={currentPage === "home" ? "active" : ""}>
                     Inicio
                 </a>
-                {worker?.type === "admin" && (
+                {worker?.type === "operator" && (
                     <a onClick={() => setCurrentPage("edit")} className={currentPage === "edit" ? "active" : ""}>
                         Configurações
                     </a>
                 )}
-                {worker?.type === "admin" && (
+                {worker?.type === "operator" && (
                     <a onClick={() => setCurrentPage("dashboard")} className={currentPage === "dashboard" ? "active" : ""}>
                         Dashboard
                     </a>

@@ -72,8 +72,8 @@ const EditPage = (props: EditPageProps) => {
                         botão abaixo.
                     </p>
                     <div className="form-group">
-                        <label>Nome</label>
-                        <input
+                        <label className="n1">Nome</label>
+                        <input className="enter"
                             type="text"
                             value={sectorData.name}
                             onChange={(e) => handleInputChange('name', e.target.value)}
@@ -107,7 +107,7 @@ const EditPage = (props: EditPageProps) => {
                                         type="text"
                                         value={rule}
                                         onChange={(e) =>
-                                            handleRequirementChange(index, e.target.value)
+                                            handleRequirementChange(index, e.target.value)  
                                         }
                                     />
                                     <button 

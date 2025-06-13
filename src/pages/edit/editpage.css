@@ -5,9 +5,7 @@
   font-family: Arial, sans-serif;
 }
 
-.edit-page {
-
-}
+.edit-page {}
 
 .sidebar {
   width: 70px;
@@ -108,7 +106,8 @@
   flex-direction: column;
   max-height: 500px;
   position: relative;
-  padding-bottom: 60px; /* Espaço para o botão */
+  padding-bottom: 60px;
+  /* Espaço para o botão */
 }
 
 .requirements-header {
@@ -216,8 +215,8 @@
   font-weight: 500;
   cursor: pointer;
   position: fixed;
-  bottom: 30px;
-  left: 20%;
+  bottom: 60px;
+  left: 19%;
   transform: translateX(-50%);
   width: fit-content;
   transition: background-color 0.2s, transform 0.1s;
@@ -234,6 +233,19 @@
   transform: translateX(-50%) translateY(1px);
 }
 
+.requirement-input-group {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.enter{
+  flex: left;
+}
+
+.n1{
+  left: 100px;
+}
 /* Otimizações para desktop */
 @media (min-width: 1024px) {
   .content-area {
