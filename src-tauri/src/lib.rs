@@ -62,9 +62,9 @@ async fn update_sector(sector: SectorUpdate, code: String) -> Result<Sector, Str
 }
 
 #[tauri::command]
-fn run_external_script() -> String {
+fn run_external_script(script_name:String) -> String {
     println!("entrou aqui");
-    let result = external_scripts::run_python_dashboard();
+    let result = external_scripts::run_python_dashboard(script_name);
     println!("{}", result);
     return String::from(result);
 }

@@ -1,29 +1,52 @@
 import { invoke } from "@tauri-apps/api/core";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "../../globals.css";
+import "./Dashboard.css"
+import { Dash } from "../components/Dash";
 const DashboardPage = () => {
-    const runDashboard = async () => {
-        console.log("....");
-        const result = (await invoke("run_external_script")) as string;
-        console.log("result", result);
-        window.open(result, "_blank");
+    const [selectedDash, setSelectedDash] = useState<string>("alertas");
+    const [dashUrl, setDashUrl] = useState<string>("");
+
+    const runDashboard = async (scriptName?: string) => {
+        const result = (await invoke("run_external_script", {
+            scriptName: selectedDash,
+        })) as string;
+        setDashUrl(result); // Salva a URL do dash para exibir no iframe
     };
+
     useEffect(() => {
-        runDashboard();
-    }, []);
+        runDashboard(selectedDash);
+    }, [selectedDash]);
+
     return (
         <div className="container">
             <section className="content">
-                <h2>Dashboard</h2>
-                <p>Bem vindo a área de visualização dos dados</p>
-                <iframe
-                    src="http://127.0.0.1:8050/"
-                    title="Dashboard Python"
-                    width="100%"
-                    height="100%"
-                    style={{ border: "none" }}
-                    allow="fullscreen"
-                />
+                <div className="dashboard-container">
+                    <h2>Dashboard</h2>
+                    <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
+                        <button onClick={() => setSelectedDash("graficoEPIA")}
+                            style={{ fontWeight: selectedDash === "graficoEPIA" ? "bold" : "normal" }}>
+                            Gráficos Gerais
+                        </button>
+                        <button onClick={() => setSelectedDash("alertas")}
+                            style={{ fontWeight: selectedDash === "alertas" ? "bold" : "normal" }}>
+                            Alertas
+                        </button>
+                        <button onClick={() => setSelectedDash("funcionarios")}
+                            style={{ fontWeight: selectedDash === "funcionarios" ? "bold" : "normal" }}>
+                            Funcionarios
+                        </button>
+                        <button onClick={() => setSelectedDash("estatistica")}
+                            style={{ fontWeight: selectedDash === "estatistica" ? "bold" : "normal" }}>
+                            Estatistica
+                        </button>
+                    </div>
+                    {dashUrl ? (
+                        <Dash/>
+                    ) : (
+                        <div>Carregando dashboard...</div>
+                    )}
+                </div>
             </section>
         </div>
     );

@@ -4,13 +4,19 @@ fn is_port_in_use(port:u16)->bool{
     return TcpStream::connect(("127.0.0.1", port)).is_ok();
 }
 
-pub fn run_python_dashboard()->&'static str{
+pub fn run_python_dashboard(script_string:String)->&'static str{
     println!("entrou na função tauri");
+    println!("script selecionado: {}" ,script_string);  
     if(is_port_in_use(8050)){
-        return "dashboard já está rodando!"
+        print!("já está rodando");
+        let pid = Command::new("bash").arg("lsof -t -i:8050 | xargs kill -9")
+            .output()
+            .expect("Failed to execute command");
+        println!("dashboard morto!")
     }
+    let script_path = format!("core/python/{}.py", script_string);
     let output = Command::new("python3")
-        .arg("core/scripts/graficoEPIA.py")
+        .arg(script_path)
         .spawn();
     println!("server python rodando");
    return "http://127.0.0.1:8050/";
