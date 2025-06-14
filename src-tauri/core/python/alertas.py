@@ -80,7 +80,7 @@ def buscar_dados_da_api():
         df_final = df[colunas_existentes]
         
         print("Dados transformados com sucesso. Colunas finais:", df_final.columns.tolist())
-
+        print("COWABUNGA")
         return df_final
 
     except requests.exceptions.RequestException as e:

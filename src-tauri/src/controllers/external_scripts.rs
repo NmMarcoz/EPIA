@@ -5,13 +5,15 @@ fn is_port_in_use(port:u16)->bool{
 }
 
 pub fn run_python_dashboard(script_string:String)->&'static str{
-    println!("entrou na função tauri");
     println!("script selecionado: {}" ,script_string);  
     if(is_port_in_use(8050)){
         print!("já está rodando");
-        let pid = Command::new("bash").arg("lsof -t -i:8050 | xargs kill -9")
+        let pid = Command::new("zsh")
+            .arg("-c")
+            .arg("lsof -t -i:8050 | xargs kill -9")
             .output()
             .expect("Failed to execute command");
+        println!("pid status: {}", pid.status);
         println!("dashboard morto!")
     }
     let script_path = format!("core/python/{}.py", script_string);
