@@ -1,12 +1,69 @@
 # Importando as bibliotecas necessárias
-from datetime import datetime, date, time
+from datetime import datetime
 from dash import Dash, html, dcc, Output, Input, dash_table, State
 import pandas as pd
-import numpy as np # Importado para gerar dados de exemplo
+import requests # Importado para fazer requisições à API
 import dash_iconify
 
 # Inicializando o aplicativo Dash
 app = Dash(__name__)
+
+# --- FUNÇÃO MODIFICADA PARA BUSCAR DADOS DE FUNCIONÁRIOS DA API ---
+def buscar_dados_funcionarios_api():
+    """
+    Busca dados de funcionários da API, trata erros e retorna um DataFrame.
+    """
+    # !!! ATENÇÃO: Ajuste esta URL para o endpoint correto da sua API de funcionários !!!
+    url = "http://localhost:3000/workers" 
+    try:
+        response = requests.get(url, timeout=10)
+        response.raise_for_status()
+        
+        dados_json = response.json()
+        if not dados_json:
+            print("Aviso: A API de funcionários retornou uma lista vazia.")
+            return pd.DataFrame()
+            
+        df = pd.json_normalize(dados_json)
+        
+        print(f"Sucesso! {len(df)} registros de funcionários recebidos da API.")
+        
+        # Mapeia os nomes das colunas da API para nomes mais amigáveis no dashboard.
+        mapa_colunas = {
+            'registrationNumber': 'Matrícula',
+            'name': 'Nome',
+            'email': 'Email',
+            'function': 'Cargo',
+            'sector.name': 'Área'
+        }
+        
+        # --- CORREÇÃO DO ERRO ---
+        # Antes de renomear, verifica se a coluna 'sector.name' existe.
+        # Se não existir, cria a coluna 'Área' com um valor padrão para evitar o erro.
+        if 'sector.name' not in df.columns:
+            print("Aviso: A coluna 'sector.name' não foi encontrada. A coluna 'Área' será preenchida com 'Não especificada'.")
+            df['Área'] = 'Não especificada'
+
+        df.rename(columns=mapa_colunas, inplace=True)
+        
+        # Garante que as colunas essenciais para o dashboard existam
+        colunas_essenciais = ['Matrícula', 'Nome', 'Email', 'Cargo', 'Área']
+        for col in colunas_essenciais:
+            if col not in df.columns:
+                # Se uma coluna essencial não for encontrada, retorna um DataFrame vazio para não quebrar o app
+                print(f"ERRO: A coluna esperada '{col}' não foi encontrada nos dados da API após a transformação.")
+                return pd.DataFrame()
+        
+        # Retorna apenas as colunas que serão usadas, na ordem desejada
+        return df[colunas_essenciais]
+
+    except requests.exceptions.RequestException as e:
+        print(f"ERRO: Não foi possível conectar à API de funcionários em {url}. Detalhes: {e}")
+        return pd.DataFrame()
+    except (ValueError, KeyError) as e:
+        print(f"ERRO: Problema ao processar os dados de funcionários. Detalhes: {e}")
+        return pd.DataFrame()
+
 
 # --- Layout do Aplicativo ---
 # O layout define a estrutura e a aparência da página.
@@ -113,33 +170,6 @@ app.layout = html.Div(
     ]
 )
 
-def gerar_dados_funcionarios(n_registros=50):
-    """Gera um DataFrame de exemplo com dados de funcionários."""
-    nomes = ['Alice', 'Bruno', 'Carla', 'Daniel', 'Eduarda', 'Fábio', 'Gabriela', 'Hugo', 'Isabela', 'João']
-    sobrenomes = ['Silva', 'Santos', 'Oliveira', 'Souza', 'Lima', 'Pereira', 'Ferreira', 'Costa', 'Rodrigues', 'Almeida']
-    cargos = {
-        'Montagem': ['Montador(a)', 'Líder de Montagem'],
-        'Solda': ['Soldador(a)', 'Inspetor(a) de Solda'],
-        'Pintura': ['Pintor(a)', 'Preparador(a)'],
-        'Logística': ['Operador(a) de Empilhadeira', 'Almoxarife'],
-        'Qualidade': ['Inspetor(a) de Qualidade', 'Analista de Qualidade']
-    }
-    
-    data = []
-    matriculas_usadas = set()
-    while len(data) < n_registros:
-        matricula = f'M{np.random.randint(1000, 2000)}'
-        if matricula not in matriculas_usadas:
-            matriculas_usadas.add(matricula)
-            nome = np.random.choice(nomes)
-            sobrenome = np.random.choice(sobrenomes)
-            nome_completo = f'{nome} {sobrenome}'
-            email = f'{nome.lower()}.{sobrenome.lower()}@empresa.com'.replace(' ', '')
-            area = np.random.choice(list(cargos.keys()))
-            cargo = np.random.choice(cargos[area])
-            data.append({'Matrícula': matricula, 'Nome': nome_completo, 'Email': email, 'Cargo': cargo, 'Área': area})
-            
-    return pd.DataFrame(data)
 
 # --- Callback para Atualizar os Dados ---
 @app.callback(
@@ -155,14 +185,21 @@ def gerar_dados_funcionarios(n_registros=50):
 )
 def atualizar_tabela_funcionarios(n_clicks, matricula, nome, areas):
     """
-    Esta função gera dados de funcionários, aplica filtros e atualiza a tabela.
+    Esta função busca dados de funcionários da API, aplica filtros e atualiza a tabela.
     """
-    df = gerar_dados_funcionarios()
-    area_options = [{'label': area, 'value': area} for area in sorted(df['Área'].unique())]
+    # MODIFICAÇÃO: Busca dados da API em vez de gerar dados de exemplo
+    df = buscar_dados_funcionarios_api()
+    
+    # Se a API falhar ou não retornar dados, exibe uma mensagem de erro e componentes vazios
+    if df.empty:
+        horario_falha = datetime.now().strftime("Falha ao carregar dados da API em %d/%m/%Y %H:%M:%S")
+        return [], [], [], horario_falha, "Nenhum funcionário encontrado"
+        
+    area_options = [{'label': area, 'value': area} for area in sorted(df['Área'].dropna().unique())]
     
     df_filtrado = df.copy()
     if matricula:
-        df_filtrado = df_filtrado[df_filtrado['Matrícula'].str.contains(matricula, case=False, na=False)]
+        df_filtrado = df_filtrado[df_filtrado['Matrícula'].astype(str).str.contains(matricula, case=False, na=False)]
     if nome:
         df_filtrado = df_filtrado[df_filtrado['Nome'].str.contains(nome, case=False, na=False)]
     if areas:

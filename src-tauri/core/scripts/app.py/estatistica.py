@@ -1,31 +1,92 @@
 # Importando as bibliotecas necessárias
-from datetime import datetime, date, time
+from datetime import datetime
 from dash import Dash, html, dcc, Output, Input, dash_table, State
 import pandas as pd
-import numpy as np # Importado para gerar dados de exemplo
 import plotly.express as px
 import dash_iconify
+import requests # Essencial para buscar dados da API
 
 # Inicializando o aplicativo Dash
 app = Dash(__name__)
 
-# Função para gerar dados de exemplo, substituindo a leitura do Excel
-def gerar_dados_exemplo(n_registros=200):
-    """Gera um DataFrame de exemplo para a aplicação."""
-    matriculas = [f'M{np.random.randint(1000, 2000)}' for _ in range(n_registros)]
-    areas = np.random.choice(['Montagem', 'Solda', 'Pintura', 'Logística', 'Qualidade'], size=n_registros)
-    epis = np.random.choice(['Capacete', 'Óculos', 'Luvas', 'Protetor Auricular'], size=n_registros)
-    datas = pd.to_datetime(pd.to_datetime('2024-01-01') + pd.to_timedelta(np.random.randint(0, 365, size=n_registros), unit='d'))
-    alertas = np.random.choice([0, 1], size=n_registros, p=[0.7, 0.3])
-    
-    df = pd.DataFrame({
-        'Matrícula': matriculas,
-        'Área': areas,
-        'EPI Removido': epis,
-        'Horário da Checagem': datas,
-        'Alerta Gerado': alertas
-    })
-    return df
+# --- FUNÇÃO PARA BUSCAR E TRANSFORMAR DADOS DA API (INTEGRADA DO CÓDIGO ANTERIOR) ---
+def buscar_dados_da_api():
+    """
+    Busca dados da API, transforma o JSON no formato esperado pelo dashboard,
+    trata erros e retorna um DataFrame do Pandas.
+    """
+    # !!! ATENÇÃO: Ajuste esta URL para o endpoint correto da sua API !!!
+    url = "http://localhost:3000/logs" 
+    try:
+        # Faz a requisição com um timeout para não travar o app indefinidamente
+        response = requests.get(url, timeout=10)
+        # Lança um erro HTTP para respostas ruins (como 404 ou 500)
+        response.raise_for_status()
+        
+        # Converte a lista de objetos JSON da resposta em um DataFrame
+        dados_json = response.json()
+        if not dados_json:
+            print("Aviso: A API retornou uma lista vazia.")
+            return pd.DataFrame()
+            
+        df = pd.json_normalize(dados_json)
+        
+        print(f"Sucesso! {len(df)} registros recebidos da API.")
+        print("Colunas originais recebidas:", df.columns.tolist())
+
+        # --- Bloco de Transformação dos Dados (MODIFICADO) ---
+        # Mapeia os nomes das colunas da API para nomes mais amigáveis no dashboard.
+        mapa_colunas = {
+            'createdAt': 'Horário da Checagem',
+            'worker.registrationNumber': 'Matrícula',
+            'worker.name': 'Trabalhador',
+            'sector.name': 'Área',
+            'allEpiCorrects': 'Todos EPIs Corretos',
+            'removedEpi': 'EPI Removido',
+            'remotionHour': 'Hora da Remoção',
+            'sector.rules': 'Regras da Área' # <-- NOVA COLUNA MAPEADA
+        }
+        
+        # Renomeia as colunas de acordo com o mapa
+        df.rename(columns=mapa_colunas, inplace=True)
+        
+        # Converte a coluna 'EPI Removido' para uma string, evitando erros na tabela
+        if 'EPI Removido' in df.columns:
+            df['EPI Removido'] = df['EPI Removido'].apply(
+                lambda x: ', '.join(map(str, x)) if isinstance(x, list) else '-' if pd.isna(x) else str(x)
+            )
+
+        # --- NOVA CORREÇÃO ---
+        # Converte a coluna 'Regras da Área' para string, pois ela também pode ser uma lista
+        if 'Regras da Área' in df.columns:
+            df['Regras da Área'] = df['Regras da Área'].apply(
+                lambda x: ', '.join(map(str, x)) if isinstance(x, list) else '-' if pd.isna(x) else str(x)
+            )
+
+        # Garante que as colunas essenciais existam
+        colunas_necessarias = ['Horário da Checagem', 'Matrícula', 'Área', 'Todos EPIs Corretos']
+        for col in colunas_necessarias:
+            if col not in df.columns:
+                print(f"ERRO CRÍTICO: A coluna essencial '{col}' não foi encontrada.")
+                return pd.DataFrame()
+
+        # Converte a coluna de data/hora
+        df['Horário da Checagem'] = pd.to_datetime(df['Horário da Checagem'], errors='coerce')
+        
+        # Cria a coluna 'Alerta Gerado'
+        df['Alerta Gerado'] = (~df['Todos EPIs Corretos']).astype(int)
+        
+        print("Dados transformados com sucesso.")
+
+        return df
+
+    except requests.exceptions.RequestException as e:
+        print(f"ERRO: Não foi possível conectar à API em {url}. Detalhes: {e}")
+        return pd.DataFrame()
+    except (ValueError, KeyError) as e:
+        print(f"ERRO: Problema ao processar os dados recebidos da API. Detalhes: {e}")
+        return pd.DataFrame()
+
 
 # Função auxiliar para estilizar os gráficos
 def estilizar_grafico(fig):
@@ -115,9 +176,17 @@ app.layout = html.Div(
     State('date-picker-range', 'end_date')
 )
 def atualizar_tudo(n_clicks, matricula_digitada, areas_selecionadas, start_date, end_date):
-    df = gerar_dados_exemplo()
+    # --- MODIFICAÇÃO: Usa a função da API em vez de gerar dados de exemplo ---
+    df = buscar_dados_da_api()
+    
+    # Se a API falhar ou retornar dados vazios, exibe gráficos e tabelas vazias
+    if df.empty:
+        horario_falha = datetime.now().strftime("Falha ao carregar dados da API em %d/%m/%Y %H:%M:%S")
+        fig_vazia = estilizar_grafico(px.bar(title='Dados indisponíveis'))
+        return [], fig_vazia, fig_vazia, fig_vazia, fig_vazia, [], [], horario_falha, "Nenhum registro encontrado"
+
     df['Data da Checagem'] = df['Horário da Checagem'].dt.date
-    area_options = [{'label': area, 'value': area} for area in sorted(df['Área'].unique())]
+    area_options = [{'label': area, 'value': area} for area in sorted(df['Área'].dropna().unique())]
 
     df_filtrado = df.copy()
     if matricula_digitada:
@@ -144,15 +213,31 @@ def atualizar_tudo(n_clicks, matricula_digitada, areas_selecionadas, start_date,
 
     # --- Gráfico Alertas por Horário ---
     df_alertas_filtrado = df_filtrado[df_filtrado['Alerta Gerado'] == 1].copy()
-    df_alertas_filtrado['Hora'] = df_alertas_filtrado['Horário da Checagem'].dt.hour
-    contagem_horas = df_alertas_filtrado['Hora'].value_counts().sort_index().reset_index()
-    contagem_horas.columns = ['Hora', 'Quantidade de Alertas']
-    grafico_alertas = estilizar_grafico(px.bar(contagem_horas, x='Hora', y='Quantidade de Alertas', title='Distribuição de Alertas por Hora', text_auto=True))
-    grafico_alertas.update_xaxes(tickvals=list(range(24)))
+    if not df_alertas_filtrado.empty:
+        df_alertas_filtrado['Hora'] = df_alertas_filtrado['Horário da Checagem'].dt.hour
+        contagem_horas = df_alertas_filtrado['Hora'].value_counts().sort_index().reset_index()
+        contagem_horas.columns = ['Hora', 'Quantidade de Alertas']
+        grafico_alertas = estilizar_grafico(px.bar(contagem_horas, x='Hora', y='Quantidade de Alertas', title='Distribuição de Alertas por Hora', text_auto=True))
+        grafico_alertas.update_xaxes(tickvals=list(range(24)))
+    else:
+        grafico_alertas = estilizar_grafico(px.bar(title='Nenhum Alerta no Período'))
+
 
     # --- Tabela de Dados Completos ---
-    data_tabela = df_filtrado.to_dict('records')
-    colunas_tabela = [{'name': col, 'id': col} for col in df_filtrado.columns]
+    # Define explicitamente as colunas que queremos exibir na tabela
+    colunas_para_exibir = [
+        'Matrícula', 'Trabalhador', 'Área', 'Horário da Checagem', 
+        'EPI Removido', 'Hora da Remoção', 'Regras da Área'
+    ]
+    colunas_existentes = [col for col in colunas_para_exibir if col in df_filtrado.columns]
+    df_tabela = df_filtrado[colunas_existentes].copy()
+    
+    # Formata a data para a tabela
+    if 'Horário da Checagem' in df_tabela.columns:
+        df_tabela['Horário da Checagem'] = df_tabela['Horário da Checagem'].dt.strftime('%d/%m/%Y %H:%M:%S')
+
+    data_tabela = df_tabela.to_dict('records')
+    colunas_tabela = [{'name': col, 'id': col} for col in df_tabela.columns]
 
     contagem_dados_texto = f"Total de Registros: {len(df_filtrado)}"
     horario_atual = datetime.now().strftime("Atualizado em: %d/%m/%Y %H:%M:%S")
