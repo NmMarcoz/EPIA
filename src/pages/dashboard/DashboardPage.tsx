@@ -1,36 +1,41 @@
+
 import { invoke } from "@tauri-apps/api/core";
 import React, { useEffect, useState } from "react";
 import "../../globals.css";
 import "./Dashboard.css";
 import { Dash } from "../components/Dash";
-const DashboardPage = () => {
+interface props {
+    scriptName: string;
+}
+const DashboardPage = (props:props) => {
     const [selectedDash, setSelectedDash] = useState<string>("graficoEPIA");
     const [dashUrl, setDashUrl] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(true);
 
-    const runDashboard = async (dash: string) => {
+    const runDashboard = async () => {
         const result = (await invoke("run_external_script", {
-            scriptName: dash,
+            scriptName: props.scriptName,
         })) as string;
         console.log("Dashboard URL:", result);
         setDashUrl(result); // Atualiza a URL do dashboard
         setLoading(false);
     };
 
-    const handleSelected = (dash: string) => {
-        console.log("Selected dashboard:", dash);
-        setSelectedDash(dash);
-        setLoading(true);
-        runDashboard(dash);
-    };
-
+    // const handleSelected = (dash: string) => {
+    //     console.log("Selected dashboard:", dash);
+    //     setSelectedDash(dash);
+    //     setLoading(true);
+    //     runDashboard(dash);
+    // };
+    useEffect(() => {
+        runDashboard();
+    },[props.scriptName]);
 
     return (
         <div className="container">
             <section className="content">
                 <div className="dashboard-container">
-                    <h2>Dashboard</h2>
-                    <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
+                    {/* <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
                         <button
                             onClick={() => handleSelected("graficoEPIA")}
                             style={{
@@ -75,7 +80,7 @@ const DashboardPage = () => {
                         >
                             Estatistica
                         </button>
-                    </div>
+                    </div> */}
                     <Dash/>
                     {/* {loading ? (
                         <h2>carregando...</h2>
