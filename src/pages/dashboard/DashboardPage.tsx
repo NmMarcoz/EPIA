@@ -1,3 +1,4 @@
+
 import { invoke } from "@tauri-apps/api/core";
 import React, { useEffect, useState } from "react";
 import "../../globals.css";
@@ -29,7 +30,7 @@ const DashboardPage = () => {
         <div className="container">
             <section className="content">
                 <div className="dashboard-container">
-                    <h2>Dashb oard</h2>
+                    <h2>Dashboard</h2>
                     <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
                         <button
                             onClick={() => handleSelected("graficoEPIA")}

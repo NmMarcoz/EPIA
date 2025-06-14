@@ -1,4 +1,4 @@
-import requests
+climport requests
 
 # URL da API para a qual você quer fazer a requisição
 url = "http://localhost:3000"
