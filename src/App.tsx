@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { Homepage } from "./pages/home/homepage";
 import EditPage from "./pages/edit/editpage";
@@ -12,6 +12,7 @@ import { Sector, Worker } from "./utils/types/EpiaTypes.ts";
 import { Toaster, toast } from "sonner";
 import * as epiaProvider from "./infra/providers/EpiaServerProvider.ts";
 import { Setores } from "./pages/setores/Setores.tsx";
+import { InicioPage } from "./pages/inicio/inicio.tsx";
 
 function App() {
     const [currentPage, setCurrentPage] = useState("home");
@@ -21,28 +22,25 @@ function App() {
     const [user, setUser] = useState<Worker | undefined>();
     const [sector, setSector] = useState<Sector>();
     const [sectorCode, setSectorCode] = useState<string>("");
+
     const handleWorker = async (): Promise<Worker> => {
-        console.log("começando....");
-        setCardId("010102031");
-        console.log("cardId", cardId);
-        const worker = (await epiaProvider.getWorkerByCardId(cardId)) as Worker;
+        const worker = (await epiaProvider.getSession()) as Worker;
         console.log("worker", worker);
         setWorker(worker);
         return worker;
     };
-    const getRoomInfos = async () => {
-        const response = (await invoke("get_room_infos", {
-            code: "STD06",
-        })) as Sector;
+    const getRoomInfos = async (sectorCode?:string) => {
+        const response = await epiaProvider.getSectorByCode(sectorCode ?? "STD06");
         setSector(response);
     };
+
 
     const handleLoginSuccess = async () => {
         try {
             console.log("handle login");
-            await handleWorker();
-            console.log("worker", worker);
-
+            // await handleWorker();
+            // console.log("worker", worker);
+            
             await getRoomInfos();
             toast.success("autenticado!");
             setIsAuthenticated(true);
@@ -67,14 +65,17 @@ function App() {
     const renderPage = () => {
         switch (currentPage) {
             case "home":
-                return <Homepage worker={worker!} sector={sector!} />;
+                return worker?.type === "admin"
+                ? <Homepage worker={worker!} sector={sector!} />
+                : <InicioPage></InicioPage>
+                ;
             case "setores":
                 return <Setores handleSectorClick={handleConfigPage} />
             case "edit":
                 return (
                     <EditPage
                         sector={sector!}
-                        onSectorUpdate={() => epiaProvider.getSectorByCode(sector?.code!)}
+                        onSectorUpdate={async () => getRoomInfos(sector?.code!)}
                     />
                 );
             case "dashboard":

@@ -23,6 +23,22 @@ myColor = (0, 0, 255)
 
 logs = []
 
+def get_detections_in_frame(results):
+    detections = []
+    for r in results:
+        for box in r.boxes:
+            x1, y1, x2, y2 = map(int, box.xyxy[0])
+            if float(box.conf[0]) > 0.5:
+                cls = int(box.cls[0])
+                currentClass = classNames[cls] if cls < len(classNames) else "N/A"
+                if currentClass in classNames:
+                    detections.append(currentClass)
+                cvzone.putTextRect(img, f'{currentClass} {box.conf}', (max(0, x1), max(35, y1)),
+                scale=1, thickness=1, colorB=myColor, colorT=(255, 255, 255),
+                colorR=myColor, offset=10)
+                cv2.rectangle(img, (x1, y1), (x2, y2), myColor, 3)
+    return detections
+
 def sendToApi():
     if not logs: 
         print("Nenhum log capturado")
@@ -80,11 +96,12 @@ def tooEarly(date1, date2):
         date2 = datetime.fromtimestamp(date2)
     
     diff = date2 - date1
-    if diff >= timedelta(seconds=10):
+    if diff >= timedelta(seconds=14):
        print("mais de 5 segundos entre eles")
        return False
     print("menos de 5 segundos")
     return True
+    
 
 while True:
     success, img = cap.read()
@@ -94,31 +111,42 @@ while True:
     results = model(img, stream=True)
     detections_found = False 
     
-    for r in results:
-        for box in r.boxes:
-            x1, y1, x2, y2 = map(int, box.xyxy[0])
-            conf = round(float(box.conf[0]), 2)
-            cls = int(box.cls[0])
-            currentClass = classNames[cls] if cls < len(classNames) else "N/A"
-            if conf > 0.5:
-                detections_found = True  # Marca que houve detecção
-                if currentClass in classNames:
-                    myColor = (0, 255, 0)
-                    date = datetime.now().timestamp()                    
-                    mountLogs(sector, worker, next(filter(lambda x: x != currentClass, classNames), None), date, len(currentClass) == len(classNames), currentClass)
-                else:
-                    date = datetime.now().timestamp()
-                    mountLogs(sector, worker, classNames, date, False, None)
-                    myColor = (255, 0, 0)
+    # for r in results:
+    #     for box in r.boxes:
+    #         x1, y1, x2, y2 = map(int, box.xyxy[0])
+    #         conf = round(float(box.conf[0]), 2)
+    #         cls = int(box.cls[0])
+    #         currentClass = classNames[cls] if cls < len(classNames) else "N/A"
+    #         if conf > 0.5:
+    #             detections_found = True  # Marca que houve detecção
+    #             if currentClass in classNames:
+    #                 myColor = (0, 255, 0)
+    #                 date = datetime.now().timestamp()                    
+    #                 mountLogs(sector, worker, next(filter(lambda x: x != currentClass, classNames), None), date, len(currentClass) == len(classNames), currentClass)
+    #             else:
+    #                 date = datetime.now().timestamp()
+    #                 mountLogs(sector, worker, classNames, date, False, None)
+    #                 myColor = (255, 0, 0)
 
-                cvzone.putTextRect(img, f'{currentClass} {conf}', (max(0, x1), max(35, y1)),
-                                   scale=1, thickness=1, colorB=myColor, colorT=(255, 255, 255),
-                                   colorR=myColor, offset=10)
-                cv2.rectangle(img, (x1, y1), (x2, y2), myColor, 3)
+    #             cvzone.putTextRect(img, f'{currentClass} {conf}', (max(0, x1), max(35, y1)),
+    #                                scale=1, thickness=1, colorB=myColor, colorT=(255, 255, 255),
+    #                                colorR=myColor, offset=10)
+    #             cv2.rectangle(img, (x1, y1), (x2, y2), myColor, 3)
       
+    frame_detections = get_detections_in_frame(results)
+
+    missing_epis = [epi for epi in classNames if epi not in frame_detections]
+    if missing_epis:
+        detections_found = True
+        date = datetime.now().timestamp()
+        mountLogs(sector, worker, missing_epis, date, False, None)
+        myColor = (255, 0, 0)  # Cor para EPI ausente
+    else:
+        myColor = (0, 255, 0)  # Cor para EPI presente
     if not detections_found:
         date = datetime.now().timestamp()
         mountLogs(sector, worker, classNames, date, False, None)
+   
     
     cv2.imshow("Webcam - PPE Detection", img)
     

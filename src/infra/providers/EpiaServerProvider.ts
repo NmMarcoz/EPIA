@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { Sector, Worker } from '../../utils/types/EpiaTypes';
 
 const epiaServer = axios.create({
@@ -40,5 +40,20 @@ export const getSectorByCode = async(sectorCode: string): Promise<Sector> => {
         return sector.data;
     } catch (err) {
         throw new Error("Falha ao buscar setor");
+    }
+}
+
+export const getSession = async(): Promise<Worker> => {
+    try{
+        const worker = await epiaServer.get<Worker>(`/sessions`);
+        if(!worker){
+            throw new Error("Falha ao buscar sessão");
+        }
+        return worker.data;
+    }catch(err){
+        if (err instanceof AxiosError){
+            throw new Error(err.response?.data?.message || "Erro ao buscar sessão");
+        }
+        throw new Error("Falha ao buscar sessão");
     }
 }
