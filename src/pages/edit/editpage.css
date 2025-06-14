@@ -216,8 +216,9 @@
   font-weight: 500;
   cursor: pointer;
   position: fixed;
-  bottom: 30px;
-  left: 20%;
+  bottom: -20px;
+  left: -90%;
+  
   transform: translateX(-50%);
   width: fit-content;
   transition: background-color 0.2s, transform 0.1s;
@@ -248,10 +249,10 @@
     margin-bottom: 0;
   }
 
-  .save-button {
+  /* .save-button {
     margin-top: 30px;
     padding: 12px 30px;
-  }
+  } */
 }
 
 /* Para telas muito grandes */

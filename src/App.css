@@ -1,67 +1,375 @@
-.main-container{
-  box-sizing: border-box;
-  font-family: Arial, Helvetica, sans-serif;
-  margin: 0px;
-  background-color: #232537;
-  width: 100vw;
-  height: 100%;
-  display: flex;
-  padding: 24px; /* ou o valor que preferir */
-}
-.app-container{
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
+/* Fonte corporativa mais séria */
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap");
 
-}
-.search-container{
-  margin-bottom: 10px;
-}
-
-input{
-  padding-left: 10px;
-  width: 15vw;
-  height: 5vh;
-  align-items: center;
-
-}
-
-html, body, #root {
+/* Reset e base */
+html,
+body,
+#root {
   height: 100%;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
-.navigator{
-  padding-right: 20px;
+/* Container principal - tema industrial */
+.main-container {
   box-sizing: border-box;
-  padding-top: 0px;
+  margin: 0px;
+  background: linear-gradient(135deg, #1a1d29 0%, #232537 50%, #2a2d3a 100%);
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  padding: 12px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Container da aplicação - mais clean */
+.app-container {
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  color: rgb(255, 176, 86);
+  flex: 1;
+  margin-left: 16px;
+  transition: margin-left 0.12s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 176, 86, 0.08);
+  padding: 28px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+/* Área de trigger do menu */
+.menu-trigger-zone {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 35px;
+  height: 100vh;
+  z-index: 999;
+  cursor: pointer;
+}
+
+/* Navigator - design mais corporativo */
+.navigator {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  width: 300px;
+  height: calc(100vh - 24px);
+  padding: 36px 28px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  color: #ffb056;
+  background: linear-gradient(145deg, rgba(26, 29, 41, 0.98) 0%, rgba(35, 37, 55, 0.98) 100%);
+  backdrop-filter: blur(24px);
+  z-index: 1000;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 176, 86, 0.12);
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 176, 86, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+
+  transition: transform 0.12s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.navigator-hidden {
+  transform: translateX(-100%);
+}
+
+.navigator-visible {
+  transform: translateX(0);
+}
+
+/* Header do sistema - mais profissional */
+.navigator h1 {
+  margin: 0 0 8px 0;
+  font-weight: 700;
+  font-size: 32px;
+  background: linear-gradient(135deg, #ffb056 0%, #ff8a00 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -1px;
+  text-align: center;
+}
+
+/* Subtítulo do sistema */
+.navigator::after {
+  content: "EPIA";
+  display: block;
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 176, 86, 0.6);
+  text-align: center;
+  margin-bottom: 40px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(255, 176, 86, 0.1);
+  padding-bottom: 24px;
+}
+
+/* Links do menu - mais limpos */
+.navigator a {
+  color: rgba(255, 255, 255, 0.75);
+  margin-bottom: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  user-select: none;
+  text-decoration: none;
+  padding: 14px 20px;
+  border-radius: 10px;
+  transition: all 0.08s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.navigator a::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 176, 86, 0.08) 0%, rgba(255, 138, 0, 0.08) 100%);
+  opacity: 0;
+  transition: opacity 0.08s ease;
 }
 
 .navigator a:hover {
   cursor: pointer;
-  color: rgb(255, 176, 86);
-}
-.navigator a.active {
-    color: rgb(255, 176, 86);
-    
-}
-.navigator h1{
-  margin-bottom: 3vh;
-  font-weight: bolder;
+  color: #ffb056;
+  background: rgba(255, 176, 86, 0.06);
+  transform: translateX(2px);
 }
 
-a{
-  color: white;
-  margin-bottom: 40px;
-  font-size: 24px;
+.navigator a:hover::before {
+  opacity: 1;
 }
-.search-bar {
+
+.navigator a.active {
+  color: #ffb056;
+  background: rgba(255, 176, 86, 0.1);
+  transform: translateX(2px);
+  border-left: 2px solid #ffb056;
+  font-weight: 600;
+}
+
+/* Ícones dos menus */
+.navigator a .icon {
+  font-size: 16px;
+  opacity: 0.8;
+}
+
+/* Botão de logout - mais discreto mas visível */
+.logout-btn {
+  margin-top: auto !important;
+  color: rgba(255, 255, 255, 0.6) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  background: rgba(255, 255, 255, 0.03) !important;
+  padding: 14px 20px !important;
+  border-radius: 10px !important;
+  text-align: center;
+  font-weight: 500 !important;
+  transition: all 0.12s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+  font-size: 14px !important;
+}
+
+.logout-btn:hover {
+  background: rgba(255, 107, 107, 0.08) !important;
+  border-color: rgba(255, 107, 107, 0.3) !important;
+  color: #ff6b6b !important;
+  transform: translateX(0) !important;
+}
+
+/* Container de busca - mais profissional */
+.search-container {
+  margin-bottom: 28px;
   position: relative;
-  margin-bottom: 20px;
-  max-width: 450px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Input de busca corporativo */
+.search-container input {
+  width: 100%;
+  max-width: 420px;
+  height: 44px;
+  padding: 0 18px 0 44px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  color: white;
+  font-size: 14px;
+  font-weight: 400;
+  font-family: "IBM Plex Sans", sans-serif;
+  backdrop-filter: blur(8px);
+  transition: all 0.12s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  outline: none;
+}
+
+.search-container input::placeholder {
+  color: rgba(255, 255, 255, 0.35);
+  font-weight: 400;
+}
+
+.search-container input:focus {
+  border-color: rgba(255, 176, 86, 0.4);
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 0 0 2px rgba(255, 176, 86, 0.08);
+}
+
+/* Ícone de busca mais sutil */
+.search-container::before {
+  content: "⚡";
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  opacity: 0.5;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Status indicator no header */
+.status-indicator {
+  position: absolute;
+  top: 28px;
+  right: 28px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 500;
+}
+
+.status-indicator::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #4ade80;
+  box-shadow: 0 0 8px rgba(74, 222, 128, 0.4);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Melhor hierarquia visual */
+.page-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: white;
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 176, 86, 0.1);
+}
+
+/* Cards mais profissionais */
+.card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 24px;
+  backdrop-filter: blur(8px);
+  transition: all 0.12s ease;
+}
+
+.card:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 176, 86, 0.2);
+  transform: translateY(-1px);
+}
+
+/* Scrollbar industrial */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 176, 86, 0.25);
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 176, 86, 0.4);
+}
+
+/* Responsividade aprimorada */
+@media (max-width: 768px) {
+  .navigator {
+    width: 280px;
+  }
+
+  .app-container {
+    margin-left: 0;
+    padding: 20px;
+  }
+}
+
+/* Estados de loading mais sutis */
+.loading {
+  opacity: 0.6;
+  pointer-events: none;
+  position: relative;
+}
+
+.loading::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border: 2px solid rgba(255, 176, 86, 0.2);
+  border-top: 2px solid #ffb056;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Focus para acessibilidade */
+.navigator a:focus-visible {
+  outline: 2px solid #ffb056;
+  outline-offset: 2px;
+}
+
+/* Tema escuro otimizado */
+@media (prefers-color-scheme: dark) {
+  .main-container {
+    background: linear-gradient(135deg, #0f1117 0%, #1a1d29 50%, #232537 100%);
+  }
 }
