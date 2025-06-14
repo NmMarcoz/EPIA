@@ -29,7 +29,7 @@ const DashboardPage = () => {
         <div className="container">
             <section className="content">
                 <div className="dashboard-container">
-                    <h2>Dashboard</h2>
+                    <h2>Dashb oard</h2>
                     <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
                         <button
                             onClick={() => handleSelected("graficoEPIA")}
