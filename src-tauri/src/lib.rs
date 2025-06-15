@@ -39,9 +39,9 @@ fn get_requirements() -> Vec<&'static str> {
 }
 
 #[tauri::command]
-fn run_ia()->(){
+fn run_ia(iaName:String)->(){
     println!("entrou no run ia");
-    external_scripts::run_ia();
+    external_scripts::run_ia(iaName);
 }
 
 #[derive(Serialize, Deserialize)]

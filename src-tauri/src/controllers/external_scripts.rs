@@ -25,13 +25,15 @@ pub fn run_python_dashboard(script_string:String)->&'static str{
    return "http://127.0.0.1:8050/";
 }
 
-pub fn run_ia()->(){
+pub fn run_ia(ia_name:String)->(){
     println!("entrou teste");
+    println!("ianame {} ", ia_name);
     if(is_port_in_use(8050)){
         println!("ja ta rodando");
     }
+    let path = format!("core/IA/{}.py", ia_name);
     let output = Command::new("python3")
-        .arg("core/IA/detect_webcam.py")
+        .arg(path)
         .spawn();
     println!("server python rodando");
    println!("rodou!!!");

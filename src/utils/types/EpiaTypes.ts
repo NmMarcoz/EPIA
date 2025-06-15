@@ -54,3 +54,9 @@ export type Notification={
   updatedAt: string,
   log:Log
 }
+
+export interface UserSession {
+  _id: string | null,
+  allCorrect: boolean;
+  cardId:     string;
+}

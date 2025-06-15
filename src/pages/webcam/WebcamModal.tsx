@@ -18,7 +18,9 @@ export const WebcamCapture = () => {
             <button
                 onClick={async () => {
                     console.log("clicou");
-                    await invoke("run_ia")
+                    await invoke("run_ia",{
+                        iaName: "detect_alternate_webcam"
+                    })
                    // setIsModalOpen(true);
                 }}
             >
