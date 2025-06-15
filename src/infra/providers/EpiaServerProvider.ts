@@ -1,5 +1,5 @@
 import axios, { AxiosError } from "axios";
-import { Log, Sector, Worker } from "../../utils/types/EpiaTypes";
+import { Log, Notification, Sector, Worker } from "../../utils/types/EpiaTypes";
 
 const epiaServer = axios.create({
     baseURL: "http://localhost:3000",
@@ -73,3 +73,15 @@ export const getLogs = async (): Promise<Log[]> => {
         throw new Error("Erro ao buscar logs");
     }
 };
+
+export const getNotifications = async (): Promise<Notification[]> =>{
+    try {
+        const notifications = await epiaServer.get<Notification[]>("/notifications");
+        if (!notifications) {
+            throw new Error("Erro ao buscar notificações");
+        }
+        return notifications.data;
+    } catch (err) {
+        throw new Error("Erro ao buscar notificações");
+    }
+}

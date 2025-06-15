@@ -4,6 +4,8 @@ import "../../globals.css";
 import "./Dashboard.css";
 import { Dash } from "../components/Dash";
 import axios from "axios";
+
+
 interface props {
     scriptName: string;
 }

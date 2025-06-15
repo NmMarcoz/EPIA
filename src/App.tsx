@@ -18,6 +18,7 @@ import { faGear } from "@fortawesome/free-solid-svg-icons";
 import { InicioPage } from "./pages/inicio/Inicio.tsx";
 import { ToastContainer, toast } from "react-toastify";
 import { LogPage } from "./pages/logs/LogPage.tsx";
+import NotificationBell from "./pages/components/NotificationBell";
 
 function App() {
     const [currentPage, setCurrentPage] = useState("home");
@@ -159,6 +160,7 @@ function App() {
 
     return (
         <>
+            <NotificationBell />
             <ToastContainer position="top-right" />
             <div className="main-container">
                 <div

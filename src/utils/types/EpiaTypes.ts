@@ -44,3 +44,13 @@ export type Log = {
   allEpiCorrects: boolean;
   createdAt: string;
 };
+
+export type Notification={
+  message: string,
+  summary:string,
+  type:string,
+  consumed:boolean,
+  createdAt: string,
+  updatedAt: string,
+  log:Log
+}
