@@ -1,13 +1,13 @@
-
 import { invoke } from "@tauri-apps/api/core";
 import React, { useEffect, useState } from "react";
 import "../../globals.css";
 import "./Dashboard.css";
 import { Dash } from "../components/Dash";
+import axios from "axios";
 interface props {
     scriptName: string;
 }
-const DashboardPage = (props:props) => {
+const DashboardPage = (props: props) => {
     const [selectedDash, setSelectedDash] = useState<string>("graficoEPIA");
     const [dashUrl, setDashUrl] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(true);
@@ -16,9 +16,26 @@ const DashboardPage = (props:props) => {
         const result = (await invoke("run_external_script", {
             scriptName: props.scriptName,
         })) as string;
-        console.log("Dashboard URL:", result);
-        setDashUrl(result); // Atualiza a URL do dashboard
-        setLoading(false);
+        setDashUrl(result);
+        setLoading(true);
+
+        // Polling para saber quando o dashboard está pronto
+        const checkDashboard = async () => {
+            try {
+                const response = await axios.get(dashUrl);
+                console.log("Dashboard response:", response);
+                if(response.status === 200){
+                    setLoading(false);
+                }else{
+                    setLoading(true);
+                }
+                
+            } catch {
+                setTimeout(checkDashboard, 700);
+            }
+        };
+    
+        setTimeout(checkDashboard, 1000);
     };
 
     // const handleSelected = (dash: string) => {
@@ -27,72 +44,35 @@ const DashboardPage = (props:props) => {
     //     setLoading(true);
     //     runDashboard(dash);
     // };
-    // useEffect(() => {
-    //     runDashboard();
-    // },[props.scriptName]);
+    useEffect(() => {
+        runDashboard();
+    }, [props.scriptName]);
 
     return (
-        <div className="container">
+        <div className="dashboard-container">
             <section className="content">
                 <div className="dashboard-container">
-                    {/* <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
-                        <button
-                            onClick={() => handleSelected("graficoEPIA")}
-                            style={{
-                                fontWeight:
-                                    selectedDash === "graficoEPIA"
-                                        ? "bold"
-                                        : "normal",
-                            }}
-                        >
-                            Gráficos Gerais
-                        </button>
-                        <button
-                            onClick={() => handleSelected("alertas")}
-                            style={{
-                                fontWeight:
-                                    selectedDash === "alertas"
-                                        ? "bold"
-                                        : "normal",
-                            }}
-                        >
-                            Alertas
-                        </button>
-                        <button
-                            onClick={() => handleSelected("funcionarios")}
-                            style={{
-                                fontWeight:
-                                    selectedDash === "funcionarios"
-                                        ? "bold"
-                                        : "normal",
-                            }}
-                        >
-                            Funcionarios
-                        </button>
-                        <button
-                            onClick={() => handleSelected("estatistica")}
-                            style={{
-                                fontWeight:
-                                    selectedDash === "estatistica"
-                                        ? "bold"
-                                        : "normal",
-                            }}
-                        >
-                            Estatistica
-                        </button>
-                    </div> */}
-                    <Dash/>
-                    {/* {loading ? (
-                        <h2>carregando...</h2>
-                    ) : dashUrl ? (
-                        <iframe
-                            src={"http://127.0.0.1:8050/"}
-                            title="Dashboard"
-                            style={{ width: "100%", height: 600, border: "1px solid #ccc", borderRadius: 8 }}
-                        />
+                    {loading ? (
+                        <div className="loading-dashboard">
+                            <div className="loading-spinner"></div>
+                            <p>Carregando dashboard...</p>
+                        </div>
                     ) : (
-                        <div>Selecione um dashboard.</div>
-                    )} */}
+                        <iframe
+                            src={dashUrl}
+                            title="Dashboard"
+                            className="dashboard-iframe"
+                            width="100%"
+                            height="100%"
+                            style={{
+                                width: "100%",
+                                height: 700,
+                                border: "1px solid #ccc",
+                                borderRadius: 8,
+                            }}
+                            allow="fullscreen"
+                        />
+                    )}
                 </div>
             </section>
         </div>

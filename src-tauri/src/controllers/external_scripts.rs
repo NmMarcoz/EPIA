@@ -8,13 +8,14 @@ pub fn run_python_dashboard(script_string:String)->&'static str{
     println!("script selecionado: {}" ,script_string);  
     if(is_port_in_use(8050)){
         print!("já está rodando");
-        let pid = Command::new("zsh")
-            .arg("-c")
-            .arg("lsof -t -i:8050 | xargs kill -9")
-            .output()
-            .expect("Failed to execute command");
-        println!("pid status: {}", pid.status);
-        println!("dashboard morto!")
+        // let pid = Command::new("zsh")
+        //     .arg("-c")
+        //     .arg("lsof -t -i:8050 | xargs kill -9")
+        //     .output()
+        //     .expect("Failed to execute command");
+        // println!("pid status: {}", pid.status);
+        // println!("dashboard morto!")
+        return "http://127.0.0.1:8050/"
     }
     let script_path = format!("core/python/{}.py", script_string);
     let output = Command::new("python3")

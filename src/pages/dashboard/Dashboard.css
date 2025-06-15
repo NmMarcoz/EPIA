@@ -1,0 +1,36 @@
+/* Spinner animado centralizado para loading do dashboard em tema escuro */
+
+.loading-dashboard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 600px;
+  min-height: 300px;
+  width: 100%;
+  color: #ffe066;
+  background: #181c24;
+}
+
+.loading-spinner {
+  border: 10px solid #23283a;
+  border-top: 10px solid #ffe066;
+  border-radius: 50%;
+  width: 90px;
+  height: 90px;
+  animation: spin 1.1s linear infinite;
+  margin-bottom: 32px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-dashboard p {
+  font-size: 2rem;
+  color: #ffe066;
+  margin: 0;
+  font-weight: 600;
+  letter-spacing: 1px;
+}

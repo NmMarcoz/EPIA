@@ -20,6 +20,11 @@ html, body {
     gap: 30px;
 }
 
+.dashboard-container{
+  padding-top: 10px;
+  padding-bottom:10px;
+}
+
 .content{
     display: flex;
     flex-direction: column;

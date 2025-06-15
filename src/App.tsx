@@ -55,8 +55,6 @@ function App() {
     const handleLoginSuccess = async () => {
         try {
             console.log("handle login");
-            // await handleWorker();
-            // console.log("worker", worker);
 
             await getRoomInfos();
 
@@ -145,12 +143,6 @@ function App() {
                 return <LogPage/>;
             case "webcam":
                 return <WebcamCapture />;
-            case "Alertas":
-                return <DashboardPage scriptName="alertas" />;
-            case "Funcionarios":
-                return <DashboardPage scriptName="funcionarios" />;
-            case "Estatistica":
-                return <DashboardPage scriptName="estatistica" />;
             default:
                 return <Acess handleWorker={handleWorker} />;
         }
@@ -271,57 +263,10 @@ function App() {
                             }
                         >
                             <span className="icon">📊</span>
-                            Gráficos Gerais
+                            Dashboard
                         </a>
                     )}
-                    {worker?.type === "admin" && (
-                        <a
-                            onClick={() => setCurrentPage("Alertas")}
-                            className={
-                                currentPage === "Alertas" ? "active" : ""
-                            }
-                            role="button"
-                            tabIndex={0}
-                            aria-current={
-                                currentPage === "dashboard" ? "page" : undefined
-                            }
-                        >
-                            <span className="icon">📊</span>
-                            Alertas
-                        </a>
-                    )}
-                    {worker?.type === "admin" && (
-                        <a
-                            onClick={() => setCurrentPage("Funcionarios")}
-                            className={
-                                currentPage === "Funcionarios" ? "active" : ""
-                            }
-                            role="button"
-                            tabIndex={0}
-                            aria-current={
-                                currentPage === "dashboard" ? "page" : undefined
-                            }
-                        >
-                            <span className="icon">📊</span>
-                            Funcionário
-                        </a>
-                    )}
-                    {worker?.type === "admin" && (
-                        <a
-                            onClick={() => setCurrentPage("Estatistica")}
-                            className={
-                                currentPage === "Estatísca" ? "active" : ""
-                            }
-                            role="button"
-                            tabIndex={0}
-                            aria-current={
-                                currentPage === "dashboard" ? "page" : undefined
-                            }
-                        >
-                            <span className="icon">📊</span>
-                            Estatísca
-                        </a>
-                    )}
+
 
                     <a
                         onClick={handleLogout}
