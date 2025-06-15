@@ -1,0 +1,470 @@
+/* Reset e base */
+* {
+  box-sizing: border-box;
+}
+
+.container {
+  min-height: 100vh;
+  background: #f5f6fa;
+  padding: 2rem 1rem; /* Reduzir padding lateral */
+  display: flex;
+  flex-direction: column;
+  width: 100%; /* Garantir largura total */
+}
+
+/* Header - Mais compacto para desktop */
+.page-header {
+  margin-bottom: 2rem;
+  text-align: left;
+  width: 100%; /* Usar toda largura */
+  max-width: none; /* Remover limitação de largura */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.page-header h1 {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: #4c51bf;
+  margin-bottom: 0.5rem;
+  line-height: 1.2;
+}
+
+.page-header p {
+  font-size: 1rem;
+  color: #718096;
+  margin: 0;
+}
+
+/* Main Layout - Otimizado para desktop */
+.main-panels {
+  width: 100%; /* Usar toda largura disponível */
+  max-width: none; /* Remover limitação */
+  margin: 0; /* Remover margens automáticas */
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Exatamente 50% cada */
+  gap: 1.5rem; /* Gap menor para aproveitar mais espaço */
+  flex: 1;
+  min-height: 0;
+}
+
+/* Panel Base Styles - Melhor proporção */
+.config-panel,
+.epi-panel {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 500px;
+}
+
+/* Panel Headers - Mais elegante */
+.panel-header {
+  padding: 2rem 2rem 1.5rem 2rem;
+  border-bottom: 1px solid #f1f5f9;
+  background: linear-gradient(135deg, #fafbff 0%, #f8fafc 100%);
+}
+
+.panel-title {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.panel-title h2 {
+  font-size: 1.375rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin: 0;
+  flex: 1;
+}
+
+.panel-icon {
+  font-size: 1.25rem;
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.config-icon {
+  background: linear-gradient(135deg, #e6f3ff 0%, #cce7ff 100%);
+  color: #3182ce;
+}
+
+.epi-icon {
+  background: linear-gradient(135deg, #e6fffa 0%, #b2f5ea 100%);
+  color: #38a169;
+}
+
+.panel-description {
+  color: #718096;
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/* Panel Content - Melhor espaçamento */
+.panel-content {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+/* Config Sections - Mais refinado */
+.config-section {
+  background: #fafbfc;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid #f1f5f9;
+  transition: all 0.2s ease;
+}
+
+.config-section:hover {
+  border-color: #e2e8f0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.section-header h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin: 0;
+}
+
+.section-icon {
+  font-size: 1.1rem;
+  color: #4a5568;
+}
+
+.section-description {
+  color: #718096;
+  margin-bottom: 1.25rem;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+/* Tolerance Config - Melhor alinhamento */
+.tolerance-config {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.tolerance-input {
+  width: 80px;
+  padding: 0.75rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 1rem;
+  text-align: center;
+  background: white;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.tolerance-unit {
+  padding: 0.75rem 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 1rem;
+  background: white;
+  min-width: 120px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+/* Schedule Config - Melhor layout */
+.schedule-config {
+  display: flex;
+  align-items: end;
+  gap: 1.5rem;
+}
+
+.time-group {
+  flex: 1;
+}
+
+.time-group label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #4a5568;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.time-input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 1rem;
+  background: white;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.time-separator {
+  color: #a0aec0;
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding-bottom: 0.75rem;
+}
+
+/* Config Summary - Mais destacado */
+.config-summary {
+  background: linear-gradient(135deg, #ebf8ff 0%, #e6f3ff 100%);
+  border: 2px solid #bee3f8;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-top: 0.5rem;
+}
+
+.config-summary h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #2b6cb0;
+  margin: 0 0 1rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.config-summary h4::before {
+  content: "📊";
+  font-size: 1.1rem;
+}
+
+.summary-items {
+  font-size: 0.9rem;
+  color: #2c5282;
+  line-height: 1.6;
+}
+
+.summary-items p {
+  margin: 0.5rem 0;
+  font-weight: 500;
+}
+
+/* Add Button - Mais elegante */
+.add-btn {
+  background: linear-gradient(135deg, #4c51bf 0%, #667eea 100%);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.25rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(76, 81, 191, 0.3);
+}
+
+.add-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(76, 81, 191, 0.4);
+}
+
+/* EPI List - Melhor organização */
+.epi-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.epi-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem;
+  background: #fafbfc;
+  border: 2px solid #f1f5f9;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.epi-item:hover {
+  background: #f7fafc;
+  border-color: #cbd5e0;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.epi-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.epi-icon-small {
+  font-size: 1.1rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #ffffff 0%, #f7fafc 100%);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2e8f0;
+}
+
+.epi-name {
+  font-weight: 600;
+  color: #2d3748;
+  font-size: 0.95rem;
+}
+
+.epi-status {
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.epi-status.ativo {
+  background: linear-gradient(135deg, #c6f6d5 0%, #9ae6b4 100%);
+  color: #22543d;
+  border: 1px solid #9ae6b4;
+}
+
+.epi-status.ativo:hover {
+  background: linear-gradient(135deg, #9ae6b4 0%, #68d391 100%);
+  transform: translateY(-1px);
+}
+
+.epi-status.inativo {
+  background: linear-gradient(135deg, #fed7d7 0%, #feb2b2 100%);
+  color: #742a2a;
+  border: 1px solid #feb2b2;
+}
+
+.epi-status.inativo:hover {
+  background: linear-gradient(135deg, #feb2b2 0%, #fc8181 100%);
+  transform: translateY(-1px);
+}
+
+/* Panel Footer - Mais informativo */
+.panel-footer {
+  padding: 1.5rem 2rem;
+  border-top: 1px solid #f1f5f9;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+}
+
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  font-size: 0.9rem;
+}
+
+.stat-item:last-child {
+  margin-bottom: 0;
+}
+
+.stat-label {
+  color: #718096;
+  font-weight: 500;
+}
+
+.stat-value {
+  font-weight: 700;
+  color: #2d3748;
+  font-size: 1rem;
+}
+
+.stat-value.active {
+  color: #38a169;
+}
+
+/* Form Actions - Centralizado e elegante */
+.form-actions {
+  display: flex;
+  justify-content: center;
+  width: 100%; /* Usar toda largura */
+  max-width: none; /* Remover limitação */
+  margin: 2rem 0 0 0; /* Remover margens automáticas */
+  padding-top: 1rem;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #4c51bf 0%, #667eea 100%);
+  color: white;
+  border: none;
+  padding: 1rem 3rem;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(76, 81, 191, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(76, 81, 191, 0.4);
+}
+
+/* Focus States - Mais visíveis */
+.tolerance-input:focus,
+.tolerance-unit:focus,
+.time-input:focus {
+  outline: none;
+  border-color: #4c51bf;
+  box-shadow: 0 0 0 3px rgba(76, 81, 191, 0.1);
+  transform: translateY(-1px);
+}
+
+/* Scrollbars - Mais elegantes */
+.panel-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.panel-content::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+
+.panel-content::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #cbd5e0 0%, #a0aec0 100%);
+  border-radius: 4px;
+}
+
+.panel-content::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #a0aec0 0%, #718096 100%);
+}
+
+/* Remover responsividade para desktop nativo */
+@media (max-width: 1024px) {
+  /* Manter layout desktop mesmo em telas menores */
+  .main-panels {
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+}

@@ -6,6 +6,8 @@ import { Homepage } from "./pages/home/homepage";
 import EditPage from "./pages/edit/editpage";
 import { WebcamCapture } from "./pages/webcam/WebcamModal";
 import Acess from "./pages/acess/Acess";
+import GerenciamentoEpi from "./pages/gerenciamentoEpi/GerenciamentoEpi.tsx";
+import OperacoesPontuais from "./pages/OperacoesPontuais/OperacoesPontuais.tsx";
 import "./App.css";
 import DashboardPage from "./pages/dashboard/DashboardPage";
 import type { Sector, Worker } from "./utils/types/EpiaTypes.ts";
@@ -144,6 +146,10 @@ function App() {
                 return <LogPage/>;
             case "webcam":
                 return <WebcamCapture />;
+                case "gerenciamentoEpi":
+                    return <GerenciamentoEpi></GerenciamentoEpi>
+                case "operacoes":
+                    return <OperacoesPontuais></OperacoesPontuais>
             default:
                 return <Acess handleWorker={handleWorker} />;
         }
@@ -266,6 +272,38 @@ function App() {
                         >
                             <span className="icon">📊</span>
                             Dashboard
+                        </a>
+                    )}
+                        {worker?.type === "admin" && (
+                        <a
+                            onClick={() => setCurrentPage("gerenciamentoEpi")}
+                            className={
+                                currentPage === "gerenciamentoEpi" ? "active" : ""
+                            }
+                            role="button"
+                            tabIndex={0}
+                            aria-current={
+                                currentPage === "gerenciamentoEpi" ? "page" : undefined
+                            }
+                        >
+                            <span className="icon">📊</span>
+                            Gerenciamento EPIA
+                        </a>
+                    )}
+                          {worker?.type === "admin" && (
+                        <a
+                            onClick={() => setCurrentPage("operacoes")}
+                            className={
+                                currentPage === "operacoes" ? "active" : ""
+                            }
+                            role="button"
+                            tabIndex={0}
+                            aria-current={
+                                currentPage === "operacoes" ? "page" : undefined
+                            }
+                        >
+                            <span className="icon">📊</span>
+                            Operacões 
                         </a>
                     )}
 

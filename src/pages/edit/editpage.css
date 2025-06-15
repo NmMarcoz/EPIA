@@ -207,17 +207,18 @@
 }
 
 .save-button {
+  display: flex;
   background-color: #1e2130;
   color: white;
   border: none;
   border-radius: 4px;
   padding: 12px 25px;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 500;   
   cursor: pointer;
-  position: fixed;
-  bottom: 30px;
-  left: 20%;
+  position: fixed; 
+  bottom: -150px;
+  left: -97%;
   transform: translateX(-50%);
   width: fit-content;
   transition: background-color 0.2s, transform 0.1s;
