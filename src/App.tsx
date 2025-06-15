@@ -7,7 +7,7 @@ import EditPage from "./pages/edit/editpage";
 import { WebcamCapture } from "./pages/webcam/WebcamModal";
 import Acess from "./pages/acess/Acess";
 import GerenciamentoEpi from "./pages/gerenciamentoEpi/GerenciamentoEpi.tsx";
-import OperacoesPontuais from "./pages/OperacoesPontuais/OperacoesPontuais.tsx";
+import OperacoesPontuais from "./pages/operacoes/OperacoesPontuais.tsx";
 import "./App.css";
 import DashboardPage from "./pages/dashboard/DashboardPage";
 import type { Sector, Worker } from "./utils/types/EpiaTypes.ts";
