@@ -4,21 +4,16 @@ import React, { useEffect, useState } from "react";
 import "../../globals.css";
 import "./Dashboard.css";
 import { Dash } from "../components/Dash";
-interface props {
-    scriptName: string;
-}
-const DashboardPage = (props:props) => {
-    const [selectedDash, setSelectedDash] = useState<string>("graficoEPIA");
-    const [dashUrl, setDashUrl] = useState<string>("");
-    const [loading, setLoading] = useState<boolean>(true);
+
+const Geral = () => {
+
 
     const runDashboard = async () => {
         const result = (await invoke("run_external_script", {
-            scriptName: props.scriptName,
+            scriptName: "geral"
         })) as string;
         console.log("Dashboard URL:", result);
-        setDashUrl(result); // Atualiza a URL do dashboard
-        setLoading(false);
+ 
     };
 
     // const handleSelected = (dash: string) => {

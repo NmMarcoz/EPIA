@@ -14,3 +14,33 @@ export type Sector = {
     name:string,
     rules: string[]
 }
+
+
+export type Log = {
+  id: string;
+  worker: {
+    _id: string;
+    name: string;
+    registrationNumber: string;
+    email: string;
+    function: string;
+    cardId: string;
+    type: string;
+    createdAt: string;
+    updatedAt: string;
+    __v: number;
+  };
+  sector: {
+    _id: string;
+    code: string;
+    name: string;
+    rules: string[];
+    createdAt: string;
+    updatedAt: string;
+    __v: number;
+  };
+  removedEpi: string | null;
+  remotionHour: string;
+  allEpiCorrects: boolean;
+  createdAt: string;
+};

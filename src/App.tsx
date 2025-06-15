@@ -9,7 +9,6 @@ import Acess from "./pages/acess/Acess";
 import "./App.css";
 import DashboardPage from "./pages/dashboard/DashboardPage";
 import type { Sector, Worker } from "./utils/types/EpiaTypes.ts";
-import { Toaster, toast } from "sonner";
 import * as epiaProvider from "./infra/providers/EpiaServerProvider.ts";
 import { Setores } from "./pages/setores/Setores.tsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -17,6 +16,8 @@ import { faHouse } from "@fortawesome/free-solid-svg-icons";
 import { faFolderOpen } from "@fortawesome/free-solid-svg-icons";
 import { faGear } from "@fortawesome/free-solid-svg-icons";
 import { InicioPage } from "./pages/inicio/Inicio.tsx";
+import { ToastContainer, toast } from "react-toastify";
+import { LogPage } from "./pages/logs/LogPage.tsx";
 
 function App() {
     const [currentPage, setCurrentPage] = useState("home");
@@ -34,23 +35,20 @@ function App() {
     const showTimeoutRef = useRef<NodeJS.Timeout>();
 
     // Simular status do sistema
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setSystemStatus(Math.random() > 0.1 ? "online" : "checking");
-        }, 30000);
-        return () => clearInterval(interval);
-    }, []);
+    
 
     const handleWorker = async (): Promise<Worker> => {
         const worker = (await epiaProvider.getSession()) as Worker;
         console.log("worker", worker);
         setWorker(worker);
+        toast.success("teste")
         return worker;
     };
     const getRoomInfos = async (sectorCode?: string) => {
         const response = await epiaProvider.getSectorByCode(
             sectorCode ?? "STD06"
         );
+        toast.success("Setor carregado com sucesso");
         setSector(response);
     };
 
@@ -143,6 +141,8 @@ function App() {
                 );
             case "dashboard":
                 return <DashboardPage scriptName="graficoEPIA" />;
+            case "logs":
+                return <LogPage/>;
             case "webcam":
                 return <WebcamCapture />;
             case "Alertas":
@@ -166,163 +166,193 @@ function App() {
     }
 
     return (
-        <div className="main-container">
-            <div
-                className="menu-trigger-zone"
-                onMouseEnter={handleMouseEnterTrigger}
-                onMouseLeave={handleMouseLeaveTrigger}
-            />
+        <>
+            <ToastContainer position="top-right" />
+            <div className="main-container">
+                <div
+                    className="menu-trigger-zone"
+                    onMouseEnter={handleMouseEnterTrigger}
+                    onMouseLeave={handleMouseLeaveTrigger}
+                />
 
-            {/* Menu lateral corporativo */}
-            <nav
-                className={`navigator ${
-                    isMenuVisible ? "navigator-visible" : "navigator-hidden"
-                }`}
-                onMouseEnter={handleMouseEnterMenu}
-                onMouseLeave={handleMouseLeaveMenu}
-                role="navigation"
-                aria-label="Menu principal do sistema"
-            >
-                <h1>EPIAI</h1>
-
-                <a
-                    onClick={() => setCurrentPage("home")}
-                    className={currentPage === "home" ? "active" : ""}
-                    role="button"
-                    tabIndex={0}
-                    aria-current={currentPage === "home" ? "page" : undefined}
+                {/* Menu lateral corporativo */}
+                <nav
+                    className={`navigator ${
+                        isMenuVisible ? "navigator-visible" : "navigator-hidden"
+                    }`}
+                    onMouseEnter={handleMouseEnterMenu}
+                    onMouseLeave={handleMouseLeaveMenu}
+                    role="navigation"
+                    aria-label="Menu principal do sistema"
                 >
-                    <FontAwesomeIcon icon={faHouse} className="yellow-icon" />
-                    Home
-                </a>
+                    <h1>EPIAI</h1>
 
-                {worker?.type === "admin" && (
                     <a
-                        onClick={() => setCurrentPage("setores")}
-                        className={currentPage === "setores" ? "active" : ""}
+                        onClick={() => setCurrentPage("home")}
+                        className={currentPage === "home" ? "active" : ""}
                         role="button"
                         tabIndex={0}
                         aria-current={
-                            currentPage === "setores" ? "page" : undefined
+                            currentPage === "home" ? "page" : undefined
                         }
                     >
                         <FontAwesomeIcon
-                            icon={faFolderOpen}
-                            className="yellow-icon"
-                        />{" "}
-                        Setores
-                    </a>
-                )}
-
-                {worker?.type === "admin" && (
-                    <a
-                        onClick={() => setCurrentPage("edit")}
-                        className={currentPage === "edit" ? "active" : ""}
-                        role="button"
-                        tabIndex={0}
-                        aria-current={
-                            currentPage === "edit" ? "page" : undefined
-                        }
-                    >
-                        <FontAwesomeIcon
-                            icon={faGear}
+                            icon={faHouse}
                             className="yellow-icon"
                         />
-                        Configurações
+                        Home
                     </a>
-                )}
 
-                {worker?.type === "admin" && (
+                    {worker?.type === "admin" && (
+                        <a
+                            onClick={() => setCurrentPage("setores")}
+                            className={
+                                currentPage === "setores" ? "active" : ""
+                            }
+                            role="button"
+                            tabIndex={0}
+                            aria-current={
+                                currentPage === "setores" ? "page" : undefined
+                            }
+                        >
+                            <FontAwesomeIcon
+                                icon={faFolderOpen}
+                                className="yellow-icon"
+                            />{" "}
+                            Setores
+                        </a>
+                    )}
+
+                    {worker?.type === "admin" && (
+                        <a
+                            onClick={() => setCurrentPage("edit")}
+                            className={currentPage === "edit" ? "active" : ""}
+                            role="button"
+                            tabIndex={0}
+                            aria-current={
+                                currentPage === "edit" ? "page" : undefined
+                            }
+                        >
+                            <FontAwesomeIcon
+                                icon={faGear}
+                                className="yellow-icon"
+                            />
+                            Configurações
+                        </a>
+                    )}
+                    {worker?.type === "admin" && (
+                        <a
+                            onClick={() => setCurrentPage("logs")}
+                            className={currentPage === "logs" ? "active" : ""}
+                            role="button"
+                            tabIndex={0}
+                            aria-current={
+                                currentPage === "logs" ? "page" : undefined
+                            }
+                        >
+                            <FontAwesomeIcon
+                                icon={faGear}
+                                className="yellow-icon"
+                            />
+                            Logs
+                        </a>
+                    )}
+
+                    {worker?.type === "admin" && (
+                        <a
+                            onClick={() => setCurrentPage("dashboard")}
+                            className={
+                                currentPage === "dashboard" ? "active" : ""
+                            }
+                            role="button"
+                            tabIndex={0}
+                            aria-current={
+                                currentPage === "dashboard" ? "page" : undefined
+                            }
+                        >
+                            <span className="icon">📊</span>
+                            Gráficos Gerais
+                        </a>
+                    )}
+                    {worker?.type === "admin" && (
+                        <a
+                            onClick={() => setCurrentPage("Alertas")}
+                            className={
+                                currentPage === "Alertas" ? "active" : ""
+                            }
+                            role="button"
+                            tabIndex={0}
+                            aria-current={
+                                currentPage === "dashboard" ? "page" : undefined
+                            }
+                        >
+                            <span className="icon">📊</span>
+                            Alertas
+                        </a>
+                    )}
+                    {worker?.type === "admin" && (
+                        <a
+                            onClick={() => setCurrentPage("Funcionarios")}
+                            className={
+                                currentPage === "Funcionarios" ? "active" : ""
+                            }
+                            role="button"
+                            tabIndex={0}
+                            aria-current={
+                                currentPage === "dashboard" ? "page" : undefined
+                            }
+                        >
+                            <span className="icon">📊</span>
+                            Funcionário
+                        </a>
+                    )}
+                    {worker?.type === "admin" && (
+                        <a
+                            onClick={() => setCurrentPage("Estatistica")}
+                            className={
+                                currentPage === "Estatísca" ? "active" : ""
+                            }
+                            role="button"
+                            tabIndex={0}
+                            aria-current={
+                                currentPage === "dashboard" ? "page" : undefined
+                            }
+                        >
+                            <span className="icon">📊</span>
+                            Estatísca
+                        </a>
+                    )}
+
                     <a
-                        onClick={() => setCurrentPage("dashboard")}
-                        className={currentPage === "dashboard" ? "active" : ""}
+                        onClick={handleLogout}
+                        className="logout-btn"
                         role="button"
                         tabIndex={0}
-                        aria-current={
-                            currentPage === "dashboard" ? "page" : undefined
-                        }
                     >
-                        <span className="icon">📊</span>
-                        Gráficos Gerais
+                        <span className="icon">🔒</span>
+                        Encerrar Sessão
                     </a>
-                )}
-                {worker?.type === "admin" && (
-                    <a
-                        onClick={() => setCurrentPage("Alertas")}
-                        className={currentPage === "Alertas" ? "active" : ""}
-                        role="button"
-                        tabIndex={0}
-                        aria-current={
-                            currentPage === "dashboard" ? "page" : undefined
-                        }
-                    >
-                        <span className="icon">📊</span>
-                        Alertas
-                    </a>
-                )}
-                {worker?.type === "admin" && (
-                    <a
-                        onClick={() => setCurrentPage("Funcionarios")}
-                        className={
-                            currentPage === "Funcionarios" ? "active" : ""
-                        }
-                        role="button"
-                        tabIndex={0}
-                        aria-current={
-                            currentPage === "dashboard" ? "page" : undefined
-                        }
-                    >
-                        <span className="icon">📊</span>
-                        Funcionário
-                    </a>
-                )}
-                {worker?.type === "admin" && (
-                    <a
-                        onClick={() => setCurrentPage("Estatistica")}
-                        className={currentPage === "Estatísca" ? "active" : ""}
-                        role="button"
-                        tabIndex={0}
-                        aria-current={
-                            currentPage === "dashboard" ? "page" : undefined
-                        }
-                    >
-                        <span className="icon">📊</span>
-                        Estatísca
-                    </a>
-                )}
+                </nav>
 
-                <a
-                    onClick={handleLogout}
-                    className="logout-btn"
-                    role="button"
-                    tabIndex={0}
-                >
-                    <span className="icon">🔒</span>
-                    Encerrar Sessão
-                </a>
-            </nav>
+                <main className="app-container">
+                    <div className="status-indicator">
+                        Sistema{" "}
+                        {systemStatus === "online"
+                            ? "Operacional"
+                            : "Verificando..."}
+                    </div>
 
-            <main className="app-container">
-                <div className="status-indicator">
-                    Sistema{" "}
-                    {systemStatus === "online"
-                        ? "Operacional"
-                        : "Verificando..."}
-                </div>
-
-                <div className="search-container">
-                    <input
-                        type="text"
-                        placeholder="Buscar funcionário, setor ou equipamento..."
-                        aria-label="Campo de pesquisa do sistema"
-                    />
-                </div>
-                <div className="page-content">
-                    <Toaster position="top-right" />
-                    {renderPage()}
-                </div>
-            </main>
-        </div>
+                    <div className="search-container">
+                        <input
+                            type="text"
+                            placeholder="Buscar funcionário, setor ou equipamento..."
+                            aria-label="Campo de pesquisa do sistema"
+                        />
+                    </div>
+                    <div className="page-content">{renderPage()}</div>
+                </main>
+            </div>
+        </>
     );
 }
 
