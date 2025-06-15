@@ -85,47 +85,6 @@ def mountLogs(sector,worker,removedEpi, remotionHour, allEpicorrects, detectedEp
     })
     print("log salvo");
     
-def mountAndSendToEpi(sector,worker,removedEpi, remotionHour, allEpicorrects, detectedEpi):
-    if(len(logs) > 0 and tooEarly(logs[-1]["remotionHour"],remotionHour)):
-        print("muito cedo, log nao salvo")
-        return
-    removedEpiArray = []
-    detectedEpiArray = []
-    if not isinstance(removedEpi, list) and not removedEpi is None:
-        removedEpiArray.append(removedEpi)
-    else:
-        removedEpiArray = removedEpi
-
-    if not isinstance(detectedEpi, list) and not detectedEpi is None:
-        detectedEpiArray.append(detectedEpi)
-    else:
-        detectedEpiArray = detectedEpi
-    unitaryLog = {
-        "sector": sector,
-        "worker": worker,
-        "removedEpi": removedEpiArray,
-        "remotionHour": str(remotionHour),
-        "allEpiCorrects": allEpicorrects,
-    }
-    print("unitary log", unitaryLog)
-    url = "http://localhost:3000/logs"
-
-    headers = {
-        'Content-Type': 'application/json'
-    }
-    
-    try:
-        response = requests.post(url, json=unitaryLog, headers=headers)
-        if response.status_code == 200 or response.status_code == 201:
-            print("Logs enviados com sucesso!")
-            #logs.clear() 
-        else:
-            print(f"Erro ao enviar logs. Status code: {response.status_code}")
-            print(f"Resposta: {response.text}")
-    except requests.exceptions.RequestException as e:
-        print(f"Erro na requisição: {e}")
-    print("log salvo");
-    
 #aqui eu defini um intervalo pra não sobrecarregar o banco de dados. 
 # As remoções tem que estar há 5s de diferença
 def tooEarly(date1, date2):
@@ -152,13 +111,35 @@ while True:
     results = model(img, stream=True)
     detections_found = False 
     
+    # for r in results:
+    #     for box in r.boxes:
+    #         x1, y1, x2, y2 = map(int, box.xyxy[0])
+    #         conf = round(float(box.conf[0]), 2)
+    #         cls = int(box.cls[0])
+    #         currentClass = classNames[cls] if cls < len(classNames) else "N/A"
+    #         if conf > 0.5:
+    #             detections_found = True  # Marca que houve detecção
+    #             if currentClass in classNames:
+    #                 myColor = (0, 255, 0)
+    #                 date = datetime.now().timestamp()                    
+    #                 mountLogs(sector, worker, next(filter(lambda x: x != currentClass, classNames), None), date, len(currentClass) == len(classNames), currentClass)
+    #             else:
+    #                 date = datetime.now().timestamp()
+    #                 mountLogs(sector, worker, classNames, date, False, None)
+    #                 myColor = (255, 0, 0)
+
+    #             cvzone.putTextRect(img, f'{currentClass} {conf}', (max(0, x1), max(35, y1)),
+    #                                scale=1, thickness=1, colorB=myColor, colorT=(255, 255, 255),
+    #                                colorR=myColor, offset=10)
+    #             cv2.rectangle(img, (x1, y1), (x2, y2), myColor, 3)
+      
     frame_detections = get_detections_in_frame(results)
 
     missing_epis = [epi for epi in classNames if epi not in frame_detections]
     if missing_epis:
         detections_found = True
         date = datetime.now().timestamp()
-        mountAndSendToEpi(sector, worker, missing_epis, date, False, None)
+        mountLogs(sector, worker, missing_epis, date, False, None)
         myColor = (255, 0, 0)  # Cor para EPI ausente
     else:
         myColor = (0, 255, 0)  # Cor para EPI presente
@@ -176,7 +157,7 @@ while True:
 cap.release()
 cv2.destroyAllWindows()
 print("Enviando logs para a API...")
-##sendToApi()
+sendToApi()
 print("logs \n")
 print(logs)
 
