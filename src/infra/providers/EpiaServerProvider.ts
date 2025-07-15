@@ -1,5 +1,5 @@
 import axios, { AxiosError } from "axios";
-import { Log, Notification, Sector, Worker } from "../../utils/types/EpiaTypes";
+import { Log, Notification, Sector, UserSession, Worker } from "../../utils/types/EpiaTypes";
 
 const epiaServer = axios.create({
     baseURL: "http://localhost:3000",
@@ -83,5 +83,56 @@ export const getNotifications = async (): Promise<Notification[]> =>{
         return notifications.data;
     } catch (err) {
         throw new Error("Erro ao buscar notificações");
+    }
+}
+
+
+export const setUserSession = async(cardId:string)=>{
+    try{
+        const result = await epiaServer.post<UserSession>("/usersessions", {cardId});
+        console.log("result", result);
+        return result.data
+    }catch(err){
+        if (err instanceof AxiosError) {
+            throw new Error(
+                err.response?.data?.message || "Erro ao criar sessão"
+            );
+        }
+        throw new Error("Erro ao criar sessão");
+    }
+}
+
+export const getUserSessionById = async(id:string):Promise<UserSession> => {
+    console.log("id", id);
+    try {
+        const session = await epiaServer.get<UserSession>(`/usersessions/${id}`);
+        if (!session) {
+            throw new Error("Erro ao buscar sessão do usuário");
+        }
+        return session.data;
+    } catch (err) {
+        if (err instanceof AxiosError) {
+            throw new Error(
+                err.response?.data?.message || "Erro ao buscar sessão do usuário"
+            );
+        }
+        throw new Error("Erro ao buscar sessão do usuário");
+    }
+}
+
+export const updateUserSession = async(id:string, body:UserSession):Promise<UserSession> => {
+    try {
+        const session = await epiaServer.put<UserSession>(`/usersessions/${id}`, body);
+        if (!session) {
+            throw new Error("Erro ao atualizar sessão do usuário");
+        }
+        return session.data;
+    } catch (err) {
+        if (err instanceof AxiosError) {
+            throw new Error(
+                err.response?.data?.message || "Erro ao atualizar sessão do usuário"
+            );
+        }
+        throw new Error("Erro ao atualizar sessão do usuário");
     }
 }

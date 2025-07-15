@@ -24,10 +24,9 @@ const NotificationBell: React.FC = () => {
         try {
             const res = await epiaProvider.getNotifications();
             setNotifications(res);
-            // Exibe toast para notificações não consumidas
             res.forEach((n: Notification) => {
                 if (!n.consumed) {
-                    toast.info(n.message, { position: "top-right" });
+                    toast.error(n.message, { position: "top-right" });
                 }
             });
         } catch (e) {
@@ -38,7 +37,7 @@ const NotificationBell: React.FC = () => {
 
     useEffect(() => {
         fetchNotifications();
-        const interval = setInterval(fetchNotifications, 10000); // 10s
+        const interval = setInterval(fetchNotifications, 2500); 
         return () => clearInterval(interval);
     }, []);
 

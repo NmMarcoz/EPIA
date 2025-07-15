@@ -10,7 +10,7 @@ import GerenciamentoEpi from "./pages/gerenciamentoEpi/GerenciamentoEpi.tsx";
 import OperacoesPontuais from "./pages/OperacoesPontuais/OperacoesPontuais.tsx";
 import "./App.css";
 import DashboardPage from "./pages/dashboard/DashboardPage";
-import type { Sector, Worker } from "./utils/types/EpiaTypes.ts";
+import type { Sector, UserSession, Worker } from "./utils/types/EpiaTypes.ts";
 import * as epiaProvider from "./infra/providers/EpiaServerProvider.ts";
 import { Setores } from "./pages/setores/Setores.tsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -27,10 +27,11 @@ function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [cardId, setCardId] = useState("");
     const [worker, setWorker] = useState<Worker>();
-    const [user, setUser] = useState<Worker | undefined>();
+    const [user, setUser] = useState<Worker | undefined | null>();
     const [sector, setSector] = useState<Sector>();
     const [sectorCode, setSectorCode] = useState<string>("");
     const [systemStatus, setSystemStatus] = useState("online");
+    const [userSession, setUserSession] = useState<UserSession | null>(null);
 
     // Estados para controle do menu
     const [isMenuVisible, setIsMenuVisible] = useState(false);
@@ -38,13 +39,34 @@ function App() {
     const showTimeoutRef = useRef<NodeJS.Timeout>();
 
     // Simular status do sistema
-    
+
+    // useEffect(() => {
+    //     const checkSystemStatus = async () => {
+    //         if (userSession?._id) {
+    //             try {
+    //                 const newSession = await epiaProvider.getUserSessionById(
+    //                     userSession?._id!
+    //                 );
+    //                 if(newSession?.allCorrect){
+    //                     console.log("liberado")
+    //                     setUserSession(newSession);
+    //                 }
+    //             } catch (error) {
+    //                 console.error("autenticação do usuário", error);
+    //             }
+    //         }
+    //     };
+
+    //     checkSystemStatus();
+    //     const interval = setInterval(checkSystemStatus, 1500); // 10s
+    //     return () => clearInterval(interval);
+    // }, [userSession]);
 
     const handleWorker = async (): Promise<Worker> => {
         const worker = (await epiaProvider.getSession()) as Worker;
         console.log("worker", worker);
         setWorker(worker);
-        toast.success("teste")
+        toast.success("teste");
         return worker;
     };
     const getRoomInfos = async (sectorCode?: string) => {
@@ -55,14 +77,24 @@ function App() {
         setSector(response);
     };
 
-    const handleLoginSuccess = async () => {
+    const handleLoginSuccess = async (worker: Worker) => {
         try {
             console.log("handle login");
-
+            //setWorker(worker)
             await getRoomInfos();
 
-            toast.success("Acesso autorizado");
-
+            //toast.success("Acesso autorizado");
+            console.log("worker", worker);
+            if (worker?.type === "user") {
+                console.log("SHUHRUSHRU");
+                //const result = await epiaProvider.setUserSession(worker.cardId);
+                toast.success("Sessão iniciada com sucesso");
+                // console.log("result", result);
+                // setUserSession(result);
+                await invoke("run_ia", {
+                    iaName: "detect_webcam",
+                });
+            }
             setIsAuthenticated(true);
             setCurrentPage("home");
         } catch (error) {
@@ -81,6 +113,7 @@ function App() {
         toast.info("Sessão encerrada com segurança");
         setIsMenuVisible(false);
         setIsAuthenticated(false);
+        setWorker(null);
     };
 
     // Controle do menu otimizado
@@ -129,7 +162,7 @@ function App() {
                 return worker?.type === "admin" ? (
                     <Homepage worker={worker!} sector={sector!} />
                 ) : (
-                    <InicioPage></InicioPage>
+                    <InicioPage worker={worker}></InicioPage>
                 );
             case "setores":
                 return <Setores handleSectorClick={handleConfigPage} />;
@@ -143,7 +176,7 @@ function App() {
             case "dashboard":
                 return <DashboardPage scriptName="graficoEPIA" />;
             case "logs":
-                return <LogPage/>;
+                return <LogPage />;
             case "webcam":
                 return <WebcamCapture />;
                 case "gerenciamentoEpi":
@@ -306,7 +339,6 @@ function App() {
                             Operacões 
                         </a>
                     )}
-
 
                     <a
                         onClick={handleLogout}

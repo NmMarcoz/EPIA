@@ -7,9 +7,21 @@ import json
 import threading
 from queue import Queue
 
+cap = ""
+url = "http://172.20.10.10:4747/video" # URL DO DROIDCAM PAI
+def initCap(url):
+    global cap    
+    cap = cv2.VideoCapture(url)
+    if not cap.isOpened():
+        print("falha ao iniciar a camera")
+        url = 0
+        initCap(0)
+
+
 print("Iniciando o script...")
 # Abre a webcam (0 = webcam padrão)
-cap = cv2.VideoCapture(0)
+#cap = cv2.VideoCapture(0)
+initCap(url)
 print("Webcam iniciada.")
 # Carrega o modelo treinado
 model = YOLO("core/IA/runs/detect/train2/weights/best.pt")
@@ -17,8 +29,8 @@ print("Modelo carregado.")
 # Classes usadas no seu modelo
 classNames = ['helmet', 'vest']
 
-sector = "683b9484eba56adc64b60a28" #TODO -> mock. Esse funciona em release
-worker = "683b947ceba56adc64b60a25"
+sector = "68435c0c486216841ad0e1df" #TODO -> mock. Esse funciona em release
+worker = "68436688e0d3f051ba5e258f"
 timestampz = datetime.now().timestamp() #isso aqui vai ser usado pra ver se o log ta mto cedo.
 myColor = (0, 0, 255)
 
