@@ -1,13 +1,14 @@
 from ultralytics import YOLO
 import cv2
 import cvzone
-from datetime import datetime, timedelta
+from datetime import datetime, time, timedelta
 import requests
 import json
 import threading
 from queue import Queue
 import argparse
 from logger import Logger
+import time
 
 logger = Logger()
 
@@ -17,7 +18,9 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--source', type=str, help='Caminho da webcam', default='0')
 parser.add_argument('--interval', type=int, help='Intervalo (em segundos) de distância entre o envio de logs', default=3)
 parser.add_argument('--processed_fps', type = int, help='Quantidade de frames por segundo que deseja processar', default = 5)
-parser.add_argument('--debug', type=bool, help="Ativa os logs de debug", default=False)
+parser.add_argument('--debug', action='store_true', help="Ativa os logs de debug")
+parser.add_argument('--model-path', type=str, help='Caminho do modelo YOLO', default='./runs/detect/train2/weights/best.pt')
+
 args = parser.parse_args()
 
 # Iniciando o log
@@ -30,12 +33,14 @@ global LOG_INTERVAL
 global WEBCAM_SOURCE
 global CAM_FPS
 global PROCESSED_FPS
+global MODEL_PATH
 
 CAM_FPS = 0
 
 LOG_INTERVAL = args.interval
 WEBCAM_SOURCE = args.source
 PROCESSED_FPS = args.processed_fps
+MODEL_PATH = args.model_path
 
 
 def initCap(url):
@@ -67,7 +72,7 @@ initCap(WEBCAM_SOURCE)
 
 log.info("Webcam iniciada.")
 # Carrega o modelo treinado
-model = YOLO("core/IA/runs/detect/train2/weights/best.pt")
+model = YOLO(MODEL_PATH)
 log.info("Modelo carregado.")
 # Classes usadas no seu modelo
 classNames = ['helmet', 'vest']
@@ -194,7 +199,7 @@ def mountAndSendToEpi(sector,worker,removedEpi, remotionHour, allEpicorrects, de
     log.debug("log enfileirado")
 
 #aqui eu defini um intervalo pra não sobrecarregar o banco de dados.
-# As remoções tem que estar há 5s de diferença
+# Aqui é possível configurar pela cli.
 def tooEarly(date1, date2):
     date1 = float(date1)
     date2 = float(date2)
@@ -209,36 +214,41 @@ def tooEarly(date1, date2):
        return False
     return True
 
-
+prev = 0
 while True:
+    time_elapsed = time.time()
     success, img = cap.read()
-    if not success:
-        break
-
-    results = model(img, stream=True)
-    detections_found = False
-
-    frame_detections = get_detections_in_frame(results)
-
-    missing_epis = [epi for epi in classNames if epi not in frame_detections]
-    if missing_epis:
-        detections_found = True
-        date = datetime.now().timestamp()
-        thread = threading.Thread(target=mountAndSendToEpi, args=(sector, worker, missing_epis, date, False, None))
-        thread.start()
-
-        myColor = (255, 0, 0)  # Cor para EPI ausente
-    else:
-        #se detectou as epis corretas, reseto o timestamp.
-        timestampz = datetime.now().timestamp()
-        myColor = (0, 255, 0)  # Cor para EPI presente
-    if not detections_found:
-        date = datetime.now().timestamp()
-        thread = threading.Thread(target=mountAndSendToEpi, args=(sector, worker, missing_epis, date, False, None))
-        thread.start()
-
-
-    cv2.imshow("Webcam - PPE Detection", img)
+    #pra processar de acordo com o frame setado.
+    if time_elapsed > 1./PROCESSED_FPS:
+        prev = time.time()
+        print(f"time_elapsed: {time_elapsed}")
+        if not success:
+            break
+    
+        results = model(img, stream=True)
+        detections_found = False
+    
+        frame_detections = get_detections_in_frame(results)
+    
+        missing_epis = [epi for epi in classNames if epi not in frame_detections]
+        if missing_epis:
+            detections_found = True
+            date = datetime.now().timestamp()
+            thread = threading.Thread(target=mountAndSendToEpi, args=(sector, worker, missing_epis, date, False, None))
+            thread.start()
+    
+            myColor = (255, 0, 0)  # Cor para EPI ausente
+        else:
+            #se detectou as epis corretas, reseto o timestamp.
+            timestampz = datetime.now().timestamp()
+            myColor = (0, 255, 0)  # Cor para EPI presente
+        if not detections_found:
+            date = datetime.now().timestamp()
+            thread = threading.Thread(target=mountAndSendToEpi, args=(sector, worker, missing_epis, date, False, None))
+            thread.start()
+    
+    
+        cv2.imshow("Webcam - PPE Detection", img)
 
     # Pressione 'q' para sair
     if cv2.waitKey(1) & 0xFF == ord('q'):
