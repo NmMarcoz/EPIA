@@ -1,6 +1,9 @@
 import "./HomepageStyles.css";
-
+import * as viewModel from "./homepageViewModel"
 export const Homepage = () => {
+  const handleIa = async(debug = false)=>{
+    await viewModel.launchJulia(debug);
+  }
     return (
         <div className="main-container">
             <section className="left-container">
@@ -8,7 +11,8 @@ export const Homepage = () => {
                 <div className="card">
                     <h1>Status do Sistema</h1>
                     <p>Offline</p>
-                    <a href="#">Ligar</a>
+                    <a onClick={async ()=> await handleIa()}>Ligar</a>
+                    <a onClick={async ()=> await handleIa(true)}>Ligar em modo de debug</a>
                 </div>
             </section>
 

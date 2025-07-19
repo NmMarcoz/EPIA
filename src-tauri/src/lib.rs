@@ -8,8 +8,8 @@ mod repositories;
 mod utils;
 use repositories::epia_server::{get_worker, ApiError, Worker};
 use std::fs;
-use std::path::PathBuf;
 use std::path::Path;
+use std::path::PathBuf;
 
 use crate::repositories::epia_server;
 use crate::repositories::epia_server::Sector;
@@ -42,9 +42,9 @@ fn get_requirements() -> Vec<&'static str> {
 }
 
 #[tauri::command]
-fn run_ia(iaName: String) -> () {
+fn run_ia(iaName: String, args:String) -> () {
     println!("entrou no run ia");
-    external_scripts::run_ia(iaName);
+    external_scripts::run_ia(iaName, args);
 }
 #[tauri::command]
 fn open_file(path: String) -> Result<String, String> {
@@ -56,10 +56,9 @@ fn open_file(path: String) -> Result<String, String> {
 fn save_file(path: &str, content: &str) -> Result<(), String> {
     match fs::write(Path::new(path), content) {
         Ok(_) => Ok(()),
-        Err(e) => Err(format!("Error writing file: {}", e))
+        Err(e) => Err(format!("Error writing file: {}", e)),
     }
 }
-
 
 #[derive(Serialize, Deserialize)]
 pub struct SectorUpdate {
@@ -126,6 +125,7 @@ async fn get_worker_by_card_id(card_id: String) -> Result<Worker, String> {
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_store::Builder::new().build())
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_opener::init())

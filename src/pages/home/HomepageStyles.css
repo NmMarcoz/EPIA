@@ -57,6 +57,7 @@
     font-size: 18px;
     cursor: pointer;
     transition: background-color 0.2s;
+    margin-right: 10px;
 }
 
 .card a:hover {
