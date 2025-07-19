@@ -14,9 +14,10 @@ import type { Sector, UserSession, Worker } from "./utils/types/EpiaTypes.ts";
 import * as epiaProvider from "./infra/providers/EpiaServerProvider.ts";
 import { Setores } from "./pages/setores/Setores.tsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHouse } from "@fortawesome/free-solid-svg-icons";
+import { faCirclePlay, faFileLines, faHouse, faLock, faShip, faUsersGear } from "@fortawesome/free-solid-svg-icons";
 import { faFolderOpen } from "@fortawesome/free-solid-svg-icons";
 import { faGear } from "@fortawesome/free-solid-svg-icons";
+import { faGauge } from "@fortawesome/free-solid-svg-icons";
 import { InicioPage } from "./pages/inicio/Inicio.tsx";
 import { ToastContainer, toast } from "react-toastify";
 import { LogPage } from "./pages/logs/LogPage.tsx";
@@ -117,7 +118,7 @@ function App() {
     };
 
     // Controle do menu otimizado
-    const handleMouseEnterTrigger = () => {
+    const handleMouseEnterTrigger = () => { 
         if (menuTimeoutRef.current) {
             clearTimeout(menuTimeoutRef.current);
         }
@@ -284,7 +285,7 @@ function App() {
                             }
                         >
                             <FontAwesomeIcon
-                                icon={faGear}
+                                icon={faFileLines}
                                 className="yellow-icon"
                             />
                             Logs
@@ -303,7 +304,10 @@ function App() {
                                 currentPage === "dashboard" ? "page" : undefined
                             }
                         >
-                            <span className="icon">📊</span>
+                             <FontAwesomeIcon
+                                icon={faGauge}
+                                className="yellow-icon"
+                            />
                             Dashboard
                         </a>
                     )}
@@ -319,7 +323,10 @@ function App() {
                                 currentPage === "gerenciamentoEpi" ? "page" : undefined
                             }
                         >
-                            <span className="icon">📊</span>
+                             <FontAwesomeIcon
+                                icon={faUsersGear }
+                                className="yellow-icon"
+                            />
                             Gerenciamento EPIA
                         </a>
                     )}
@@ -335,7 +342,10 @@ function App() {
                                 currentPage === "operacoes" ? "page" : undefined
                             }
                         >
-                            <span className="icon">📊</span>
+                            <FontAwesomeIcon
+                                icon={faShip }
+                                className="yellow-icon"
+                            />
                             Operacões 
                         </a>
                     )}
@@ -346,7 +356,10 @@ function App() {
                         role="button"
                         tabIndex={0}
                     >
-                        <span className="icon">🔒</span>
+                         <FontAwesomeIcon
+                                icon={faLock}
+                                className="yellow-icon"
+                            />
                         Encerrar Sessão
                     </a>
                 </nav>

@@ -7,7 +7,8 @@ import "./Acess.css";
 import { Toaster } from "sonner";
 import { Worker } from "../../utils/types/EpiaTypes.ts";
 import { ToastContainer, toast } from "react-toastify";
-
+import img from "../../assets/img/icon.png";
+import epia from "../../assets/img/EPIA.png";
 interface User {
     id: number | string;
     name: string;
@@ -46,10 +47,6 @@ const Acess: React.FC<AccessProps> = ({ onLoginSuccess, handleWorker }) => {
                     email: email,
                 };
 
-                // Salvar no localStorage para persistência
-                // localStorage.setItem("epiaUser", JSON.stringify(adminUser))
-                // localStorage.setItem("epiaAuthToken", "admin_token_" + Date.now())
-
                 onLoginSuccess!(adminUser);
             } else {
                 alert("Credenciais inválidas! Use: admin@epia.com / admin123");
@@ -82,11 +79,21 @@ const Acess: React.FC<AccessProps> = ({ onLoginSuccess, handleWorker }) => {
     return (
         <>
             <div className="access-container">
-            <ToastContainer position="top-right"/>
+                <ToastContainer position="top-right" />
                 <div className="sidebar">
                     <div className="sidebar-header">
-                        <h2 className="sidebar-title">EPIA</h2>
+                        <img
+                            src={epia}
+                            alt=""
+                            style={{
+                                width: "150px",
+                                height: "90px",
+                                marginRight: "8px",
+                            }}
+                        />
+                        {/* <h2 className="sidebar-title">EPIA</h2> */}
                     </div>
+
                     <div className="sidebar-icons">
                         <button
                             className={`sidebar-icon ${
@@ -95,9 +102,16 @@ const Acess: React.FC<AccessProps> = ({ onLoginSuccess, handleWorker }) => {
                             onClick={() => setAuthMode("operator")}
                             title="Acesso Operário"
                         >
-                            <Shield size={24} />
-                            <span className="icon-label">Operário</span>
+                            <img
+                                src={img}
+                                alt=""
+                                style={{ width: "24px", height: "24px" }}
+                            />
+                            <span className="icon-label">
+                                <span style={{ color: " #FFD700" }}>Operário</span>
+                            </span>
                         </button>
+
                         <button
                             className={`sidebar-icon ${
                                 authMode === "admin" ? "active" : ""
@@ -105,8 +119,14 @@ const Acess: React.FC<AccessProps> = ({ onLoginSuccess, handleWorker }) => {
                             onClick={() => setAuthMode("admin")}
                             title="Acesso Administrador"
                         >
-                            <Shield size={24} />
-                            <span className="icon-label">Admin</span>
+                            <img
+                                src={img}
+                                alt=""
+                                style={{ width: "24px", height: "24px" }}
+                            />
+                            <span className="icon-label">
+                                <span style={{ color: " #FFD700" }}>Administrador</span>
+                            </span>
                         </button>
                     </div>
                 </div>

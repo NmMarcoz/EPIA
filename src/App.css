@@ -13,12 +13,14 @@ body,
 }
 
 .yellow-icon {
-    color: #FFD700; /* Amarelo ouro */
-    width: 1em;
-    height: 1em;
-    margin-right: 8px;
-    filter: drop-shadow(0 0 2px rgba(255, 215, 0, 0.5));
+  color: #FFD700;
+  /* Amarelo ouro */
+  width: 1em;
+  height: 1em;
+  margin-right: 8px;
+  filter: drop-shadow(0 0 2px rgba(255, 215, 0, 0.5));
 }
+
 /* Container principal - tema industrial */
 .main-container {
   box-sizing: border-box;
@@ -232,7 +234,7 @@ body,
 
 /* Ícone de busca mais sutil */
 .search-container::before {
-  content: "⚡";
+  content: "🔍"; 
   position: absolute;
   left: 14px;
   top: 50%;
@@ -242,6 +244,7 @@ body,
   pointer-events: none;
   z-index: 1;
 }
+
 
 /* Status indicator no header */
 .status-indicator {

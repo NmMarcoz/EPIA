@@ -129,7 +129,7 @@ const GerenciamentoEpi: React.FC = () => {
           </div>
         </div>
 
-        {/* Panel 2: EPIs Cadastrados */}
+     
         <div className="epi-panel">
           <div className="panel-header">
             <div className="panel-title">
