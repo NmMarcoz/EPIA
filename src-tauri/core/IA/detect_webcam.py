@@ -42,20 +42,20 @@ def get_detections_in_frame(results):
     return detections
 
 def sendToApi():
-    if not logs: 
+    if not logs:
         print("Nenhum log capturado")
         return
-    
-    url = "http://localhost:3000/logs/lot" 
+
+    url = "http://localhost:3000/logs/lot"
     headers = {
         'Content-Type': 'application/json'
     }
-    
+
     try:
         response = requests.post(url, json=logs, headers=headers)
         if response.status_code == 200 or response.status_code == 201:
             print("Logs enviados com sucesso!")
-            #logs.clear() 
+            #logs.clear()
         else:
             print(f"Erro ao enviar logs. Status code: {response.status_code}")
             print(f"Resposta: {response.text}")
@@ -86,7 +86,7 @@ def mountLogs(sector,worker,removedEpi, remotionHour, allEpicorrects, detectedEp
         "detectedEpi": detectedEpiArray
     })
     print("log salvo");
-    
+
 def log_sender_worker():
     url = "http://localhost:3000/logs"
     headers = {'Content-Type': 'application/json'}
@@ -137,8 +137,8 @@ def mountAndSendToEpi(sector,worker,removedEpi, remotionHour, allEpicorrects, de
     print("unitary log", unitaryLog)
     log_queue.put(unitaryLog)
     print("log enfileirado")
-    
-#aqui eu defini um intervalo pra não sobrecarregar o banco de dados. 
+
+#aqui eu defini um intervalo pra não sobrecarregar o banco de dados.
 # As remoções tem que estar há 5s de diferença
 def tooEarly(date1, date2):
     date1 = float(date1)
@@ -147,23 +147,23 @@ def tooEarly(date1, date2):
         date1 = datetime.fromtimestamp(date1)
     if isinstance(date2, float):  # se for timestamp
         date2 = datetime.fromtimestamp(date2)
-    
+
     diff = date2 - date1
     if diff >= timedelta(seconds=3):
        print("mais de 5 segundos entre eles")
        return False
     print("menos de 5 segundos")
     return True
-    
+
 
 while True:
     success, img = cap.read()
     if not success:
         break
-    
+
     results = model(img, stream=True)
     detections_found = False 
-    
+
     frame_detections = get_detections_in_frame(results)
 
     missing_epis = [epi for epi in classNames if epi not in frame_detections]
@@ -172,7 +172,7 @@ while True:
         date = datetime.now().timestamp()
         thread = threading.Thread(target=mountAndSendToEpi, args=(sector, worker, missing_epis, date, False, None))
         thread.start()
-    
+
         myColor = (255, 0, 0)  # Cor para EPI ausente
     else:
         #se detectou as epis corretas, reseto o timestamp.
@@ -182,10 +182,10 @@ while True:
         date = datetime.now().timestamp()
         thread = threading.Thread(target=mountAndSendToEpi, args=(sector, worker, missing_epis, date, False, None))
         thread.start()
-   
-    
+
+
     cv2.imshow("Webcam - PPE Detection", img)
-    
+
     # Pressione 'q' para sair
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
@@ -196,4 +196,3 @@ print("Enviando logs para a API...")
 ##sendToApi()
 print("logs \n")
 print(logs)
-
