@@ -1,6 +1,5 @@
 "use client";
-
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useContext } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { Homepage } from "./pages/home/homepage";
 import EditPage from "./pages/edit/editpage";
@@ -19,57 +18,33 @@ import { InicioPage } from "./pages/inicio/Inicio.tsx";
 import { ToastContainer, toast } from "react-toastify";
 import { LogPage } from "./pages/logs/LogPage.tsx";
 import NotificationBell from "./pages/components/NotificationBell";
+import { EpiaContext } from "./infra/providers/EpiaProvider.tsx";
+import { useNavigate } from "react-router";
 
 function App() {
+    const navigate = useNavigate()
+    const { saveWorker, getWorker } = useContext(EpiaContext);
     const [currentPage, setCurrentPage] = useState("home");
     const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [cardId, setCardId] = useState("");
     const [worker, setWorker] = useState<Worker>();
-    const [user, setUser] = useState<Worker | undefined | null>();
     const [sector, setSector] = useState<Sector>();
-    const [sectorCode, setSectorCode] = useState<string>("");
     const [systemStatus, setSystemStatus] = useState("online");
     const [userSession, setUserSession] = useState<UserSession | null>(null);
 
-    // Estados para controle do menu
     const [isMenuVisible, setIsMenuVisible] = useState(false);
     const menuTimeoutRef = useRef<NodeJS.Timeout>();
     const showTimeoutRef = useRef<NodeJS.Timeout>();
 
-    // Simular status do sistema
-
-    // useEffect(() => {
-    //     const checkSystemStatus = async () => {
-    //         if (userSession?._id) {
-    //             try {
-    //                 const newSession = await epiaProvider.getUserSessionById(
-    //                     userSession?._id!
-    //                 );
-    //                 if(newSession?.allCorrect){
-    //                     console.log("liberado")
-    //                     setUserSession(newSession);
-    //                 }
-    //             } catch (error) {
-    //                 console.error("autenticação do usuário", error);
-    //             }
-    //         }
-    //     };
-
-    //     checkSystemStatus();
-    //     const interval = setInterval(checkSystemStatus, 1500); // 10s
-    //     return () => clearInterval(interval);
-    // }, [userSession]);
-
     const handleWorker = async (): Promise<Worker> => {
         const worker = (await epiaProvider.getSession()) as Worker;
         console.log("worker", worker);
-        setWorker(worker);
+        //saveWorker(worker);
         toast.success("teste");
         return worker;
     };
     const getRoomInfos = async (sectorCode?: string) => {
         const response = await epiaProvider.getSectorByCode(
-            sectorCode ?? "STD06"
+            sectorCode ?? "STD06",
         );
         toast.success("Setor carregado com sucesso");
         setSector(response);
@@ -78,7 +53,7 @@ function App() {
     const handleLoginSuccess = async (worker: Worker) => {
         try {
             console.log("handle login");
-            //setWorker(worker)
+            saveWorker(worker);
             await getRoomInfos();
 
             //toast.success("Acesso autorizado");
@@ -94,7 +69,7 @@ function App() {
                 });
             }
             setIsAuthenticated(true);
-            setCurrentPage("home");
+            navigate("/")
         } catch (error) {
             console.error("❌ Erro na autenticação:", error);
             toast.error("Falha na autenticação");
@@ -114,7 +89,6 @@ function App() {
         setWorker(null);
     };
 
-    // Controle do menu otimizado
     const handleMouseEnterTrigger = () => {
         if (menuTimeoutRef.current) {
             clearTimeout(menuTimeoutRef.current);
@@ -157,11 +131,8 @@ function App() {
     const renderPage = () => {
         switch (currentPage) {
             case "home":
-                return worker?.type === "admin" ? (
-                    <Homepage worker={worker!} sector={sector!} />
-                ) : (
-                    <InicioPage worker={worker}></InicioPage>
-                );
+                return <InicioPage worker={getWorker()}></InicioPage>;
+
             case "setores":
                 return <Setores handleSectorClick={handleConfigPage} />;
             case "edit":
