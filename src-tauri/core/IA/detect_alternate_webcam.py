@@ -6,26 +6,69 @@ import requests
 import json
 import threading
 from queue import Queue
+import argparse
+from logger import Logger
 
-cap = ""
-url = "http://172.20.10.10:4747/video" # URL DO DROIDCAM PAI
+logger = Logger()
+
+url = "http://172.20.10.10:4747/video"
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--source', type=str, help='Caminho da webcam', default='0')
+parser.add_argument('--interval', type=int, help='Intervalo (em segundos) de distância entre o envio de logs', default=3)
+parser.add_argument('--processed_fps', type = int, help='Quantidade de frames por segundo que deseja processar', default = 5)
+parser.add_argument('--debug', type=bool, help="Ativa os logs de debug", default=False)
+args = parser.parse_args()
+
+# Iniciando o log
+logger.setup_debug(args.debug)
+log = logger.get_logger()
+
+# VARIAVEIS GLOBAIS
+global cap
+global LOG_INTERVAL
+global WEBCAM_SOURCE
+global CAM_FPS
+global PROCESSED_FPS
+
+CAM_FPS = 0
+
+LOG_INTERVAL = args.interval
+WEBCAM_SOURCE = args.source
+PROCESSED_FPS = args.processed_fps
+
+
 def initCap(url):
-    global cap    
-    cap = cv2.VideoCapture(url)
+    source = 0
+    if(url !='0'):
+        source = url
+    log.debug(f"source: {source}")
+    global cap
+    global CAM_FPS
+    cap = cv2.VideoCapture(source)
+    CAM_FPS = cap.get(cv2.CAP_PROP_FPS)
+    cap.set(cv2.CAP_PROP_FPS, PROCESSED_FPS)
+    log.debug(f"novo fps configurado para ser recebido: {cap.get(cv2.CAP_PROP_FPS)}")
     if not cap.isOpened():
-        print("falha ao iniciar a camera")
+        log.error("falha ao iniciar a camera")
         url = 0
         initCap(0)
 
+log.info("Iniciando o script...")
+log.debug("------------------------")
+log.debug("Configurações selecionadas: ")
+log.debug(f"INTERVALO DE LOGS: {LOG_INTERVAL}")
+log.debug(f"CAMINHO DA WEBCAM: {WEBCAM_SOURCE}")
+log.debug(f"FPS DA CAMERA: {CAM_FPS}")
+log.debug(f"FPS A SEREM PROCESSADOS: {PROCESSED_FPS}")
+log.debug("------------------------")
 
-print("Iniciando o script...")
-# Abre a webcam (0 = webcam padrão)
-#cap = cv2.VideoCapture(0)
-initCap(url)
-print("Webcam iniciada.")
+initCap(WEBCAM_SOURCE)
+
+log.info("Webcam iniciada.")
 # Carrega o modelo treinado
 model = YOLO("core/IA/runs/detect/train2/weights/best.pt")
-print("Modelo carregado.")
+log.info("Modelo carregado.")
 # Classes usadas no seu modelo
 classNames = ['helmet', 'vest']
 
@@ -54,29 +97,29 @@ def get_detections_in_frame(results):
     return detections
 
 def sendToApi():
-    if not logs: 
-        print("Nenhum log capturado")
+    if not logs:
+        log.debug("Nenhum log capturado")
         return
-    
-    url = "http://localhost:3000/logs/lot" 
+
+    url = "http://localhost:3000/logs/lot"
     headers = {
         'Content-Type': 'application/json'
     }
-    
+
     try:
         response = requests.post(url, json=logs, headers=headers)
         if response.status_code == 200 or response.status_code == 201:
-            print("Logs enviados com sucesso!")
-            #logs.clear() 
+            log.info("Logs enviados com sucesso!")
+            #logs.clear()
         else:
-            print(f"Erro ao enviar logs. Status code: {response.status_code}")
-            print(f"Resposta: {response.text}")
+            log.error(f"Erro ao enviar logs. Status code: {response.status_code}")
+            log.error(f"Resposta: {response.text}")
     except requests.exceptions.RequestException as e:
-        print(f"Erro na requisição: {e}")
+        log.error(f"Erro na requisição: {e}")
 
 def mountLogs(sector,worker,removedEpi, remotionHour, allEpicorrects, detectedEpi):
     if(len(logs) > 0 and tooEarly(logs[-1]["remotionHour"],remotionHour)):
-        print("muito cedo, log nao salvo")
+        log.debug("muito cedo, log nao salvo")
         return
     removedEpiArray = []
     detectedEpiArray = []
@@ -97,8 +140,8 @@ def mountLogs(sector,worker,removedEpi, remotionHour, allEpicorrects, detectedEp
         "allEpiCorrects": allEpicorrects,
         "detectedEpi": detectedEpiArray
     })
-    print("log salvo");
-    
+    log.debug("log salvo")
+
 def log_sender_worker():
     url = "http://localhost:3000/logs"
     headers = {'Content-Type': 'application/json'}
@@ -109,22 +152,22 @@ def log_sender_worker():
         try:
             response = requests.post(url, json=unitaryLog, headers=headers)
             if response.status_code in (200, 201):
-                print("Log enviado com sucesso!")
+                log.info("Log enviado com sucesso!")
             else:
-                print(f"Erro ao enviar log. Status code: {response.status_code}")
-                print(f"Resposta: {response.text}")
+                log.error(f"Erro ao enviar log. Status code: {response.status_code}")
+                log.error(f"Resposta: {response.text}")
         except requests.exceptions.RequestException as e:
-            print(f"Erro na requisição: {e}")
+            log.error(f"Erro na requisição: {e}")
         log_queue.task_done()
 
-# Inicie a thread de envio de logs
+# Thread que envia os logs.
 sender_thread = threading.Thread(target=log_sender_worker, daemon=True)
 sender_thread.start()
 
 def mountAndSendToEpi(sector,worker,removedEpi, remotionHour, allEpicorrects, detectedEpi):
     global timestampz
     if(tooEarly(timestampz, remotionHour)):
-        print("muito cedo, log nao salvo")
+        log.debug("muito cedo, log nao salvo")
         return
     timestampz = remotionHour
     removedEpiArray = []
@@ -146,11 +189,11 @@ def mountAndSendToEpi(sector,worker,removedEpi, remotionHour, allEpicorrects, de
         "allEpiCorrects": allEpicorrects,
         "notify": True
     }
-    print("unitary log", unitaryLog)
+    log.debug(f"unitary log: {unitaryLog}")
     log_queue.put(unitaryLog)
-    print("log enfileirado")
-    
-#aqui eu defini um intervalo pra não sobrecarregar o banco de dados. 
+    log.debug("log enfileirado")
+
+#aqui eu defini um intervalo pra não sobrecarregar o banco de dados.
 # As remoções tem que estar há 5s de diferença
 def tooEarly(date1, date2):
     date1 = float(date1)
@@ -159,23 +202,22 @@ def tooEarly(date1, date2):
         date1 = datetime.fromtimestamp(date1)
     if isinstance(date2, float):  # se for timestamp
         date2 = datetime.fromtimestamp(date2)
-    
+
     diff = date2 - date1
-    if diff >= timedelta(seconds=3):
-       print("mais de 5 segundos entre eles")
+    if diff >= timedelta(LOG_INTERVAL):
+       log.debug(f"mais de {LOG_INTERVAL} segundos entre eles")
        return False
-    print("menos de 5 segundos")
     return True
-    
+
 
 while True:
     success, img = cap.read()
     if not success:
         break
-    
+
     results = model(img, stream=True)
-    detections_found = False 
-    
+    detections_found = False
+
     frame_detections = get_detections_in_frame(results)
 
     missing_epis = [epi for epi in classNames if epi not in frame_detections]
@@ -184,7 +226,7 @@ while True:
         date = datetime.now().timestamp()
         thread = threading.Thread(target=mountAndSendToEpi, args=(sector, worker, missing_epis, date, False, None))
         thread.start()
-    
+
         myColor = (255, 0, 0)  # Cor para EPI ausente
     else:
         #se detectou as epis corretas, reseto o timestamp.
@@ -194,18 +236,17 @@ while True:
         date = datetime.now().timestamp()
         thread = threading.Thread(target=mountAndSendToEpi, args=(sector, worker, missing_epis, date, False, None))
         thread.start()
-   
-    
+
+
     cv2.imshow("Webcam - PPE Detection", img)
-    
+
     # Pressione 'q' para sair
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
 cap.release()
 cv2.destroyAllWindows()
-print("Enviando logs para a API...")
+log.info("Enviando logs para a API...")
 ##sendToApi()
-print("logs \n")
-print(logs)
-
+log.debug("logs:")
+log.debug(logs)
