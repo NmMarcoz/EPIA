@@ -7,6 +7,9 @@ use reqwest;
 mod repositories;
 mod utils;
 use repositories::epia_server::{get_worker, ApiError, Worker};
+use std::fs;
+use std::path::PathBuf;
+use std::path::Path;
 
 use crate::repositories::epia_server;
 use crate::repositories::epia_server::Sector;
@@ -39,10 +42,24 @@ fn get_requirements() -> Vec<&'static str> {
 }
 
 #[tauri::command]
-fn run_ia(iaName:String)->(){
+fn run_ia(iaName: String) -> () {
     println!("entrou no run ia");
     external_scripts::run_ia(iaName);
 }
+#[tauri::command]
+fn open_file(path: String) -> Result<String, String> {
+    println!("entrou no open file");
+    println!("path: {}", path);
+    fs::read_to_string(PathBuf::from(path)).map_err(|e| e.to_string())
+}
+#[tauri::command]
+fn save_file(path: &str, content: &str) -> Result<(), String> {
+    match fs::write(Path::new(path), content) {
+        Ok(_) => Ok(()),
+        Err(e) => Err(format!("Error writing file: {}", e))
+    }
+}
+
 
 #[derive(Serialize, Deserialize)]
 pub struct SectorUpdate {
@@ -62,7 +79,7 @@ async fn update_sector(sector: SectorUpdate, code: String) -> Result<Sector, Str
 }
 
 #[tauri::command]
-fn run_external_script(script_name:String) -> String {
+fn run_external_script(script_name: String) -> String {
     println!("entrou aqui");
     let result = external_scripts::run_python_dashboard(script_name);
     println!("{}", result);
@@ -109,6 +126,8 @@ async fn get_worker_by_card_id(card_id: String) -> Result<Worker, String> {
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_dialog::init())
+        .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![
             greet,
@@ -119,7 +138,9 @@ pub fn run() {
             show_ip,
             get_worker_by_card_id,
             update_sector,
-            run_ia
+            run_ia,
+            open_file,
+            save_file
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

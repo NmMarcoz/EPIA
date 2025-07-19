@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
+
 body {
     margin: 0;
     font-family: "Poppins", sans-serif;
@@ -18,26 +20,55 @@ body {
 /* Sidebar */
 .sidebar-flex {
     background-color: #f4f4f4;
-    width: 20vw;
     min-height: 100vh;
     flex-shrink: 0;
     border-right: 1px solid #e0e0e0;
+    transition: width 0.3s ease;
+    width: 20vw;
+}
+
+.sidebar-flex.collapsed {
+    width: 80px;
 }
 
 /* Container do logo */
 .container-logo {
-    padding: 10px 0;
+    padding: 27px 0;
 }
 
 .container-logo h2 {
     font-size: 48px;
     font-weight: normal;
     padding-left: 51px;
+    margin: 0;
+}
+
+/* Botão de toggle */
+.toggle-button {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #666;
+    transition: transform 0.3s ease;
+    padding: 8px;
+    margin-left: 51px;
+    margin-bottom: 20px;
+    display: block;
+}
+
+.toggle-button:hover {
+    color: #000;
+}
+
+.toggle-button.rotated {
+    transform: rotate(180deg);
+    margin-left: 20px;
 }
 
 /* Conteúdo do sidebar */
 .content {
-    padding-left: 51px;
+    padding-left: 0;
 }
 
 /* Container da aplicação */
@@ -82,9 +113,11 @@ ul {
 a {
     text-decoration: none;
     color: inherit;
-    font-family: Poppins;
+    font-family: "Poppins", sans-serif;
     font-size: 28px;
-    transition: color 0.3s ease;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    display: block;
 }
 
 a:hover {
@@ -97,15 +130,17 @@ a.active {
 
 li {
     color: #000;
-    font-family: Poppins;
+    font-family: "Poppins", sans-serif;
     font-size: 28px;
     margin-bottom: 55px;
+    padding-left: 51px;
 }
 
 /* Ajuste para os itens do header */
 .header li {
     margin-bottom: 0;
     font-size: 16px;
+    padding-left: 0;
 }
 
 .header a {
@@ -126,4 +161,19 @@ hr {
     display: flex;
     align-items: center;
 }
-""""
+
+/* Ajustes para o sidebar colapsado */
+.sidebar-flex.collapsed li {
+    padding-left: 0;
+    text-align: center;
+}
+
+.sidebar-flex.collapsed .container-logo h2 {
+    font-size: 32px;
+    padding-left: 0;
+    text-align: center;
+}
+
+.sidebar-flex.collapsed a {
+    font-size: 20px;
+}

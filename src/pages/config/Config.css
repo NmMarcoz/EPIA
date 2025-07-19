@@ -1,0 +1,171 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
+
+* {
+    font-family: "Poppins", sans-serif;
+}
+
+.config-container {
+    padding: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.config-header {
+    margin-bottom: 40px;
+}
+
+.config-header h1 {
+    font-size: 32px;
+    font-weight: 500;
+    margin-bottom: 16px;
+}
+
+.warning-text {
+    color: #666;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.config-section h2 {
+    font-size: 28px;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.config-section > p {
+    color: #666;
+    margin-bottom: 24px;
+}
+
+.config-card {
+    background: white;
+    border-radius: 16px;
+    padding: 32px;
+    border: 1px solid #e0e0e0;
+}
+
+.config-card h3 {
+    font-size: 20px;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.config-card h4 {
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.config-card p {
+    color: #666;
+    margin-bottom: 16px;
+    font-size: 14px;
+}
+
+.error-text {
+    color: #ff0000 !important;
+}
+
+.input-group {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+input[type="number"] {
+    width: 120px;
+}
+
+.source-section {
+    margin-bottom: 24px;
+}
+
+.source-section label {
+    display: block;
+    margin-bottom: 8px;
+    color: #666;
+    font-size: 14px;
+}
+
+.config-footer {
+    margin-top: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 16px;
+}
+
+.primary-button {
+    background: #000;
+    color: white;
+    border: none;
+    padding: 12px 48px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.2s;
+}
+
+.primary-button:hover {
+    background: #333;
+}
+
+.secondary-button {
+    background: transparent;
+    color: #666;
+    border: none;
+    padding: 12px 24px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: color 0.2s;
+}
+
+.secondary-button:hover {
+    color: #000;
+}
+
+.tab-buttons {
+    display: flex;
+    gap: 24px;
+}
+
+.tab-button {
+    background: transparent;
+    border: none;
+    padding: 8px 0;
+    color: #666;
+    font-size: 16px;
+    cursor: pointer;
+    position: relative;
+    transition: color 0.2s;
+}
+
+.tab-button:hover {
+    color: #000;
+}
+
+.tab-button.active {
+    color: #000;
+}
+
+.tab-button.active::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: #000;
+}
