@@ -49,3 +49,17 @@ export const storeConfig = async (config: ConfigState) => {
         console.log("error while storing the config", error);
     }
 };
+
+export const getStorageCOnfig = async (): Promise<ConfigState | null> => {
+    try {
+        const store = await load("julia_config.json", { autoSave: false });
+        const config = await store.get("config") as string;
+        if(config){
+            return JSON.parse(config) as ConfigState;
+        }
+        return null
+    } catch (error) {
+        console.error("Error retrieving config from storage:", error);
+        return null;
+    }
+}

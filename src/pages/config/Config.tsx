@@ -1,14 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./Config.css";
 import { ConfigState } from "../../utils/types/InternalTypes.dt";
 import * as viewModel from "./ConfigViewModel";
 import { open, save } from "@tauri-apps/plugin-dialog";
 import { toast } from "react-toastify";
 
-
 export const Config = () => {
     const [activeTab, setActiveTab] = useState<"sources" | "performance">(
-        "sources",
+        "sources"
     );
     const [config, setConfig] = useState<ConfigState>({
         modelPath:
@@ -18,10 +17,16 @@ export const Config = () => {
         frameCount: 5,
     });
 
+    useEffect(() => {
+        viewModel.getStorageCOnfig().then((storedConfig) => {
+            if (storedConfig) setConfig(storedConfig);
+        });
+    }, []);
+
     const handleSave = async () => {
         //console.log("Configuração salva:", config);
         await viewModel.storeConfig(config);
-        toast.success("configuração salva!")
+        toast.success("configuração salva!");
     };
 
     const handleImport = async () => {
@@ -125,7 +130,7 @@ export const Config = () => {
                                     onChange={(e) =>
                                         handleSourceChange(
                                             index,
-                                            e.target.value,
+                                            e.target.value
                                         )
                                     }
                                     placeholder={`Câmera ${index + 1}`}
