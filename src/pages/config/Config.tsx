@@ -3,6 +3,8 @@ import "./Config.css";
 import { ConfigState } from "../../utils/types/InternalTypes.dt";
 import * as viewModel from "./ConfigViewModel";
 import { open, save } from "@tauri-apps/plugin-dialog";
+import { toast } from "react-toastify";
+
 
 export const Config = () => {
     const [activeTab, setActiveTab] = useState<"sources" | "performance">(
@@ -17,41 +19,41 @@ export const Config = () => {
     });
 
     const handleSave = async () => {
-        console.log("Configuração salva:", config);
-        if (config) {
-            const path = await save({
-              filters:[
-                {
-                  name: "julia_parameters",
-                  extensions: ["json"]
-                }
-              ]
-            })
-            if(path){
-               viewModel.saveConfig(config, path);
-            }
-           
-        }
+        //console.log("Configuração salva:", config);
+        await viewModel.storeConfig(config);
+        toast.success("configuração salva!")
     };
 
     const handleImport = async () => {
-      const selected = await open({
-                     multiple: false,
-                 });
-      if(selected){
-        viewModel.retrieveConfig(selected).then((config) => {
-            if (config) {
-                setConfig(config);
-            } else {
-                console.log("falha ao pegar a configuração");
-            }
+        const selected = await open({
+            multiple: false,
         });
-      }
-        
+        if (selected) {
+            viewModel.retrieveConfig(selected).then((config) => {
+                if (config) {
+                    setConfig(config);
+                } else {
+                    console.log("falha ao pegar a configuração");
+                }
+            });
+        }
     };
 
-    const handleExport = () => {
-        // Implementar lógica de exportação
+    const handleExport = async () => {
+        if (config) {
+            const path = await save({
+                filters: [
+                    {
+                        name: "julia_parameters",
+                        extensions: ["json"],
+                    },
+                ],
+            });
+            if (path) {
+                viewModel.saveConfig(config, path);
+                toast.success("Configuração exportada com sucesso!");
+            }
+        }
     };
 
     const handleSourceChange = (index: number, value: string) => {
