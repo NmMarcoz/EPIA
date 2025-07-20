@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react"
 import * as epiaProvider from "../../infra/providers/EpiaServerProvider"
 import { Log } from "../../utils/types/EpiaTypes"
+import "./LogPage.css"
+
 
 export const LogPage = () => {
     const [logs, setLogs] = useState<Log[]>([])
     const [isLoading, setIsLoading] = useState(true);
+    const [currentPage, setCurrentPage] = useState(1);
+    const logsPerPage = 10;
 
     useEffect(() => {
         const fetchLogs = async () => {
@@ -16,13 +20,18 @@ export const LogPage = () => {
         fetchLogs();
     }, []);
 
+
+    // Paginação
+    const totalPages = Math.ceil(logs.length / logsPerPage);
+    const paginatedLogs = logs.slice((currentPage - 1) * logsPerPage, currentPage * logsPerPage);
+
     if (isLoading) return <div className="container"><h2>Logs de Acesso</h2><p>Carregando logs...</p></div>;
     if (!logs.length) return <div className="container"><h2>Logs de Acesso</h2><p>Nenhum log encontrado.</p></div>;
 
     return (
         <div className="container">
-            <div className="content">
-                <h2>Logs de Acesso</h2>
+            <h1 className="title">Logs de Acesso</h1>
+            <div className="table-container">
                 <table style={{ width: '100%', borderCollapse: 'collapse', background: '#fff', borderRadius: 8, boxShadow: '0 2px 8px #0001' }}>
                     <thead>
                         <tr style={{ background: '#f5f5f5' }}>
@@ -35,7 +44,7 @@ export const LogPage = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {logs.map((log) => (
+                        {paginatedLogs.map((log) => (
                             <tr key={log.id} style={{ textAlign: 'center', background: log.allEpiCorrects ? '#e6ffe6' : '#ffe6e6' }}>
                                 <td style={{ border: '1px solid #eee', padding: 8 }}>{new Date(log.createdAt).toLocaleDateString()}</td>
                                 <td style={{ border: '1px solid #eee', padding: 8 }}>{log.remotionHour}</td>
@@ -48,6 +57,26 @@ export const LogPage = () => {
                     </tbody>
                 </table>
             </div>
+            {/* Controles de Paginação */}
+            {totalPages > 1 && (
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 20, gap: 8 }}>
+                    <button
+                        onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                        disabled={currentPage === 1}
+                        style={{ padding: '6px 12px', borderRadius: 4, border: '1px solid #ccc', background: currentPage === 1 ? '#eee' : '#fff', cursor: currentPage === 1 ? 'not-allowed' : 'pointer' }}
+                    >
+                        Anterior
+                    </button>
+                    <span style={{ margin: '0 12px' }}>Página {currentPage} de {totalPages}</span>
+                    <button
+                        onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                        disabled={currentPage === totalPages}
+                        style={{ padding: '6px 12px', borderRadius: 4, border: '1px solid #ccc', background: currentPage === totalPages ? '#eee' : '#fff', cursor: currentPage === totalPages ? 'not-allowed' : 'pointer' }}
+                    >
+                        Próxima
+                    </button>
+                </div>
+            )}
         </div>
     )
 }
