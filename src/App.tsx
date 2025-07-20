@@ -2,10 +2,10 @@
 
 import { useState, useRef, useEffect } from "react";
 import { invoke } from "@tauri-apps/api/core";
-import { Homepage } from "./pages/home/homepage";
-import EditPage from "./pages/edit/editpage";
+import { Homepage } from "./pages/home/Home.tsx";
+import EditPage from "./pages/edit/Edit.tsx";
 import { WebcamCapture } from "./pages/webcam/WebcamModal";
-import Acess from "./pages/acess/Acess";
+import Acess from "./pages/acess/Acess.tsx";
 import GerenciamentoEpi from "./pages/gerenciamentoEpi/GerenciamentoEpi.tsx";
 import OperacoesPontuais from "./pages/OperacoesPontuais/OperacoesPontuais.tsx";
 import "./App.css";
@@ -20,10 +20,10 @@ import { faGear } from "@fortawesome/free-solid-svg-icons";
 import { faGauge } from "@fortawesome/free-solid-svg-icons";
 import { InicioPage } from "./pages/inicio/Inicio.tsx";
 import { ToastContainer, toast } from "react-toastify";
-import { LogPage } from "./pages/logs/LogPage.tsx";
+import { Log } from "./pages/logs/Log.tsx";
 import NotificationBell from "./pages/components/NotificationBell";
 
-function App() {
+function   App() {
     const [currentPage, setCurrentPage] = useState("home");
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [cardId, setCardId] = useState("");
@@ -177,7 +177,7 @@ function App() {
             case "dashboard":
                 return <DashboardPage scriptName="graficoEPIA" />;
             case "logs":
-                return <LogPage />;
+                return <Log />;
             case "webcam":
                 return <WebcamCapture />;
                 case "gerenciamentoEpi":
