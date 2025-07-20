@@ -30,7 +30,7 @@ export const LogPage = () => {
 
     return (
         <div className="container">
-            <h1 className="title">Logs de Acesso</h1>
+            <h1 className="title">Logs de Conformidade</h1>
             <div className="table-container">
                 <table style={{ width: '100%', borderCollapse: 'collapse', background: '#fff', borderRadius: 8, boxShadow: '0 2px 8px #0001' }}>
                     <thead>
