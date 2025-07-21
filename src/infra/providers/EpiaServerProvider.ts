@@ -1,3 +1,14 @@
+export const getLogById = async (id: string): Promise<Log> => {
+    try {
+        const log = await epiaServer.get<Log>(`/logs/${id}`);
+        if (!log) {
+            throw new Error("Erro ao buscar log detalhado");
+        }
+        return log.data;
+    } catch (err) {
+        throw new Error("Erro ao buscar log detalhado");
+    }
+};
 import axios, { AxiosError } from "axios";
 import { Log, Notification, Sector, UserSession, Worker } from "../../utils/types/EpiaTypes";
 

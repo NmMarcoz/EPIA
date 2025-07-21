@@ -5,6 +5,7 @@ import { SideBar } from "../components/sidebar/Sidebar";
 import { Config } from "../pages/config/Config";
 import { ToastContainer } from "react-toastify";
 import { LogPage } from "../pages/logs/LogPage";
+import LogDetailed from "../pages/logs-detailed/LogDetailed";
 import DashboardPage from "../pages/dashboard/DashboardPage";
 
 export const MainRouter = () => {
@@ -19,6 +20,7 @@ export const MainRouter = () => {
                     <Route path="/config" element={<Config />} />
                     <Route path="/logs" element={<LogPage />} />
                     <Route path="/dashboard" element={<DashboardPage />} />
+                    <Route path="/logs/:logId" element={<LogDetailed />} />
                 </Route>
             </Routes>
         </BrowserRouter>

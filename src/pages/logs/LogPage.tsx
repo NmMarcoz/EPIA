@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react"
+import { useNavigate } from "react-router";
 import * as epiaProvider from "../../infra/providers/EpiaServerProvider"
 import { Log } from "../../utils/types/EpiaTypes"
 import "./LogPage.css"
 
 
 export const LogPage = () => {
+    const navigate = useNavigate();
     const [logs, setLogs] = useState<Log[]>([])
     const [isLoading, setIsLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
@@ -45,7 +47,11 @@ export const LogPage = () => {
                     </thead>
                     <tbody>
                         {paginatedLogs.map((log) => (
-                            <tr key={log.id} style={{ textAlign: 'center', background: log.allEpiCorrects ? '#e6ffe6' : '#ffe6e6' }}>
+                            <tr
+                                key={log.id}
+                                style={{ textAlign: 'center', background: log.allEpiCorrects ? '#e6ffe6' : '#ffe6e6', cursor: 'pointer' }}
+                                onClick={() => navigate(`/logs/${log.id}`)}
+                            >
                                 <td style={{ border: '1px solid #eee', padding: 8 }}>{new Date(log.createdAt).toLocaleDateString()}</td>
                                 <td style={{ border: '1px solid #eee', padding: 8 }}>{log.remotionHour}</td>
                                 <td style={{ border: '1px solid #eee', padding: 8 }}>{log.worker.name}</td>
