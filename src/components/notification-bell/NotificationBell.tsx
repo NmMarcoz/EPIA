@@ -1,51 +1,82 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
+import React, { useEffect, useState, useRef } from "react";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FiBell } from "react-icons/fi";
-import * as epiaProvider from "../../infra/providers/EpiaServerProvider";
+import { Notification } from "../../utils/types/EpiaTypes";
 
-interface Notification {
-    id: number;
-    message: string;
-    consumed: boolean;
-    createdAt?: string;
+interface NotificationBellProps {
+    open?: boolean;
+    onToggle?: () => void;
 }
 
-const NotificationBell: React.FC = () => {
+const NotificationBell: React.FC<NotificationBellProps> = ({
+    open,
+    onToggle,
+}) => {
     const [notifications, setNotifications] = useState<Notification[]>([]);
-    const [modalOpen, setModalOpen] = useState(false);
     const [loading, setLoading] = useState(false);
+    const modalOpen = !!open;
+    const handleToggle = onToggle ? onToggle : () => {};
 
     // Substitua pela sua rota real
 
-    const fetchNotifications = async () => {
-        setLoading(true);
-        try {
-            const res = await epiaProvider.getNotifications();
-            setNotifications(res);
-            res.forEach((n: Notification) => {
-                if (!n.consumed) {
-                    toast.error(n.message, { position: "top-right" });
-                }
-            });
-        } catch (e) {
-            // erro silencioso
-        }
-        setLoading(false);
-    };
+    // WebSocket URL - ajuste conforme necessário
+    const WS_URL = "ws://localhost:3000/logs/notifications";
+    const wsRef = useRef<WebSocket | null>(null);
 
     useEffect(() => {
-        fetchNotifications();
-        const interval = setInterval(fetchNotifications, 2500); 
-        return () => clearInterval(interval);
+        setLoading(true);
+        const ws = new WebSocket(WS_URL);
+        wsRef.current = ws;
+
+        ws.onopen = () => {
+            setLoading(false);
+        };
+
+        ws.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            const logs = Array.isArray(data) ? data : [data];
+            if (!logs || logs.length === 0) return;
+            // Filtra apenas notificações válidas
+            const validLogs = logs.filter(
+                (n: any) =>
+                    n &&
+                    n.data &&
+                    n.data.log &&
+                    typeof n.data.message === "string"
+            );
+            if (validLogs.length === 0) return;
+            setNotifications((prev) => {
+                const merged = [...validLogs, ...prev];
+                return merged.slice(0, 50);
+            });
+
+            // Exibe toast apenas se o modal estiver fechado (controle externo)
+            console.log("open", open);
+
+            validLogs.forEach((n: Notification) => {
+                if (
+                    n.data &&
+                    n.data.log &&
+                    n.data.log.allEpiCorrects === false
+                ) {
+                    toast.error(n.data.message, { position: "top-right" });
+                }
+            });
+        };
+
+        ws.onerror = () => {
+            setLoading(false);
+        };
+        return () => {
+            ws.close();
+        };
     }, []);
 
     return (
         <div style={{ position: "fixed", top: 20, right: 30, zIndex: 1000 }}>
-            <ToastContainer />
             <button
-                onClick={() => setModalOpen(!modalOpen)}
+                onClick={handleToggle}
                 style={{
                     background: "none",
                     border: "none",
@@ -54,7 +85,7 @@ const NotificationBell: React.FC = () => {
                 aria-label="Notificações"
             >
                 <FiBell size={28} color="#333" />
-                {notifications.some((n) => !n.consumed) && (
+                {notifications.some((n) => !n.data.log.notify) && (
                     <span
                         style={{
                             position: "absolute",
@@ -94,7 +125,7 @@ const NotificationBell: React.FC = () => {
                     >
                         Notificações
                         <button
-                            onClick={() => setModalOpen(false)}
+                            onClick={handleToggle}
                             style={{
                                 float: "right",
                                 background: "none",
@@ -115,27 +146,29 @@ const NotificationBell: React.FC = () => {
                         ) : (
                             notifications.map((n) => (
                                 <div
-                                    key={n.id}
+                                    key={n.data.log._id}
                                     style={{
                                         marginBottom: 12,
                                         padding: 10,
-                                        background: n.consumed
+                                        background: n.data.log.notify
                                             ? "#f7f7f7"
                                             : "#e6f7ff",
                                         borderRadius: 6,
-                                        border: n.consumed
+                                        border: n.data.log.notify
                                             ? "1px solid #eee"
                                             : "1px solid #91d5ff",
                                     }}
                                 >
                                     <div
                                         style={{
-                                            fontWeight: n.consumed ? 400 : 600,
+                                            fontWeight: n.data.log.notify
+                                                ? 400
+                                                : 600,
                                         }}
                                     >
-                                        {n.message}
+                                        {n.data.message}
                                     </div>
-                                    {n.createdAt && (
+                                    {n.data.log.createdAt && (
                                         <div
                                             style={{
                                                 fontSize: 12,
@@ -143,7 +176,7 @@ const NotificationBell: React.FC = () => {
                                             }}
                                         >
                                             {new Date(
-                                                n.createdAt
+                                                n.data.log.createdAt
                                             ).toLocaleString()}
                                         </div>
                                     )}

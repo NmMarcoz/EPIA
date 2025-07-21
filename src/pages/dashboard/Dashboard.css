@@ -1,5 +1,18 @@
 /* Spinner animado centralizado para loading do dashboard em tema escuro */
-
+.dashboard-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-right:20px;
+    padding-left: 20px;
+    height: 100%;
+    min-height: 300px;
+    width: 100%;
+    color: #ffe066;
+    background: #181c24;
+    transition: 0.3s ease-in;
+}
 .loading-dashboard {
   display: flex;
   flex-direction: column;

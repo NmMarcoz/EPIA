@@ -1,9 +1,11 @@
 import { Link, Outlet, useLocation } from "react-router";
 import "./Sidebar.css";
 import { useState } from "react";
+import NotificationBell from "../notification-bell/NotificationBell";
 
 export const SideBar = () => {
     const [isExpanded, setIsExpanded] = useState(true);
+    const [notificationOpen, setNotificationOpen] = useState(false);
 
     const toggleSidebar = () => {
         setIsExpanded(!isExpanded);
@@ -41,6 +43,9 @@ export const SideBar = () => {
                                     fill="#CCCCCC"
                                 />
                             </svg>
+                            <div style={{ position: "relative", display: "inline-block" }}>
+                                <NotificationBell open={notificationOpen} onToggle={() => setNotificationOpen((v) => !v)} />
+                            </div>
                             <ul className= {`sidebar-ul ${isExpanded ? "" : "collapsed"}`}>
                                 <li className="sidebar-nav">
                                   <Link className = {isActive("/home") ? "active" : ""} to="/home">Inicio</Link>
@@ -57,6 +62,7 @@ export const SideBar = () => {
                             </ul>
                         </nav>
                     </div>
+                   
                 </div>
 
                 {/* Área principal: Header e Conteúdo */}
