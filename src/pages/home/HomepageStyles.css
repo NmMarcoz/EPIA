@@ -8,11 +8,6 @@
     flex: 1;
 }
 
-.left-container > h1 {
-    font-size: 48px;
-    font-weight: 500;
-    margin-bottom: 32px;
-}
 
 .right-container {
     flex: 1;
@@ -20,11 +15,7 @@
     flex-direction: column;
 }
 
-.right-container > h1 {
-    font-size: 48px;
-    font-weight: 500;
-    margin-bottom: 32px;
-}
+
 
 .card {
     border: 1px solid #CCC;
@@ -58,6 +49,7 @@
     cursor: pointer;
     transition: background-color 0.2s;
     margin-right: 10px;
+    margin-bottom: 10px;
 }
 
 .card a:hover {

@@ -3,16 +3,13 @@ import "../../globals.css";
 import { Sector } from "../../utils/types/EpiaTypes";
 import * as epiaProvider from "../../infra/providers/EpiaServerProvider";
 import { Toaster, toast } from "sonner";
-import { SectorTable } from "../components/SectorTable";
+import { SectorTable } from "../../components/sector-table/SectorTable"
 
-interface setoresInterface {
-    handleSectorClick: (sector: Sector) => void;
-}
 
-export const Setores = ({handleSectorClick}:setoresInterface) => {
+export const Setores = () => {
     const [setores, setSetores] = useState<Sector[]>([]);
     useEffect(() => {
-        const sectors = epiaProvider
+        epiaProvider
             .getSectors()
             .catch((err) => {
                 toast.error(err.message);
@@ -29,7 +26,6 @@ export const Setores = ({handleSectorClick}:setoresInterface) => {
                 <Toaster position="bottom-right" />
                 {setores.length > 0 ? (
                     <SectorTable
-                        handleSectorClick={handleSectorClick}
                         sectors={setores}
                     />
                 ) : (

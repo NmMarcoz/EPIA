@@ -7,7 +7,8 @@ export const Homepage = () => {
     return (
         <div className="main-container">
             <section className="left-container">
-                <h1>Bem vindo a Jul.Ia</h1>
+                <h1 className="title">Bem vindo a Jul.Ia</h1>
+                <p className="subtitle">Seu sistema de monitoramento por IA</p>
                 <div className="card">
                     <h1>Status do Sistema</h1>
                     <p>Offline</p>
@@ -17,7 +18,8 @@ export const Homepage = () => {
             </section>
 
             <section className="right-container">
-                <h1>Resumo Geral</h1>
+                <h1 className="title">Resumo Geral</h1>
+                <p className="subtitle">Acompanhe aqui as últimas atualizações</p>
                 <div className="card-black">
                     <div className="status-item">
                         <h2>Logs Processados</h2>

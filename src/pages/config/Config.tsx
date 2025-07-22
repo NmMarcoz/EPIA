@@ -1,62 +1,78 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./Config.css";
 import { ConfigState } from "../../utils/types/InternalTypes.dt";
 import * as viewModel from "./ConfigViewModel";
 import { open, save } from "@tauri-apps/plugin-dialog";
+import { toast } from "react-toastify";
 
 export const Config = () => {
     const [activeTab, setActiveTab] = useState<"sources" | "performance">(
-        "sources",
+        "sources"
     );
     const [config, setConfig] = useState<ConfigState>({
         modelPath:
             "/Users/ruand/Desktop/Hackaton/EPIA/EPIA/src-tauri/core/IA/runs/detect/train2/weights/best.pt",
         sources: ["", ""],
+            "/Users/nogueira/Desenvolvimento/Projetos/EPIA/src-tauri/core/IA/runs/detect/train2/weights/best.pt",
+        sources: [
+            { source: "", sector: "" },
+            { source: "", sector: "" }
+        ],
         logInterval: 5,
         frameCount: 5,
+        sector: ""
     });
 
+    useEffect(() => {
+        viewModel.getStorageCOnfig().then((storedConfig) => {
+            if (storedConfig) setConfig(storedConfig);
+        });
+    }, []);
+
     const handleSave = async () => {
-        console.log("Configuração salva:", config);
-        if (config) {
-            const path = await save({
-              filters:[
-                {
-                  name: "julia_parameters",
-                  extensions: ["json"]
-                }
-              ]
-            })
-            if(path){
-               viewModel.saveConfig(config, path);
-            }
-           
-        }
+        //console.log("Configuração salva:", config);
+        await viewModel.storeConfig(config);
+        toast.success("configuração salva!");
     };
 
     const handleImport = async () => {
-      const selected = await open({
-                     multiple: false,
-                 });
-      if(selected){
-        viewModel.retrieveConfig(selected).then((config) => {
-            if (config) {
-                setConfig(config);
-            } else {
-                console.log("falha ao pegar a configuração");
-            }
+        const selected = await open({
+            multiple: false,
         });
-      }
-        
+        if (selected) {
+            viewModel.retrieveConfig(selected).then((config) => {
+                if (config) {
+                    setConfig(config);
+                } else {
+                    console.log("falha ao pegar a configuração");
+                }
+            });
+        }
     };
 
-    const handleExport = () => {
-        // Implementar lógica de exportação
+    const handleExport = async () => {
+        if (config) {
+            const path = await save({
+                filters: [
+                    {
+                        name: "julia_parameters",
+                        extensions: ["json"],
+                    },
+                ],
+            });
+            if (path) {
+                viewModel.saveConfig(config, path);
+                toast.success("Configuração exportada com sucesso!");
+            }
+        }
     };
 
-    const handleSourceChange = (index: number, value: string) => {
+    const handleSourceChange = (index: number, field: 'source' | 'sector', value: string) => {
         const newSources = [...config.sources];
-        newSources[index] = value;
+        newSources[index] = {
+            ...newSources[index],
+            [field]: value,
+        };
         setConfig({
             ...config,
             sources: newSources,
@@ -119,14 +135,29 @@ export const Config = () => {
                                 <label>Nome</label>
                                 <input
                                     type="text"
-                                    value={source}
+                                    value={source.source}
                                     onChange={(e) =>
                                         handleSourceChange(
                                             index,
-                                            e.target.value,
+                                            'source',
+                                            e.target.value
                                         )
                                     }
                                     placeholder={`Câmera ${index + 1}`}
+                                />
+                                <h4>Setor</h4>
+                                <label>Setor onde a câmera está localizada</label>
+                                <input
+                                    type="text"
+                                    value={source.sector}
+                                    onChange={(e) =>
+                                        handleSourceChange(
+                                            index,
+                                            'sector',
+                                            e.target.value
+                                        )
+                                    }
+                                    placeholder={`Setor ${index + 1}`}
                                 />
                             </div>
                         ))}

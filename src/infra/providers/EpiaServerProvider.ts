@@ -1,3 +1,14 @@
+export const getLogById = async (id: string): Promise<Log> => {
+    try {
+        const log = await epiaServer.get<Log>(`/logs/${id}`);
+        if (!log) {
+            throw new Error("Erro ao buscar log detalhado");
+        }
+        return log.data;
+    } catch (err) {
+        throw new Error("Erro ao buscar log detalhado");
+    }
+};
 import axios, { AxiosError } from "axios";
 import { Log, Notification, Sector, UserSession, Worker } from "../../utils/types/EpiaTypes";
 
@@ -23,6 +34,7 @@ export const getWorkerByCardId = async (cardId: string): Promise<Worker> => {
 
 export const getSectors = async (): Promise<Sector[]> => {
     try {
+      
         const sectors = await epiaServer.get<Sector[]>(`/sectors`);
         if (!sectors) {
             throw new Error("Falha ao buscar setoores");
@@ -35,6 +47,7 @@ export const getSectors = async (): Promise<Sector[]> => {
 
 export const getSectorByCode = async (sectorCode: string): Promise<Sector> => {
     try {
+        console.log('sector code', sectorCode);
         const sector = await epiaServer.get<Sector>(`/sectors/${sectorCode}`);
         if (!sector) {
             throw new Error("Falha ao buscar setor");
