@@ -10,7 +10,7 @@ export const Config = () => {
     );
     const [config, setConfig] = useState<ConfigState>({
         modelPath:
-            "/Users/nogueira/Desenvolvimento/Projetos/EPIA/src-tauri/core/IA/runs/detect/train2/weights/best.pt",
+            "/Users/ruand/Desktop/Hackaton/EPIA/EPIA/src-tauri/core/IA/runs/detect/train2/weights/best.pt",
         sources: ["", ""],
         logInterval: 5,
         frameCount: 5,
