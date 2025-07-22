@@ -12,9 +12,13 @@ export const Config = () => {
     const [config, setConfig] = useState<ConfigState>({
         modelPath:
             "/Users/nogueira/Desenvolvimento/Projetos/EPIA/src-tauri/core/IA/runs/detect/train2/weights/best.pt",
-        sources: ["", ""],
+        sources: [
+            { source: "", sector: "" },
+            { source: "", sector: "" }
+        ],
         logInterval: 5,
         frameCount: 5,
+        sector: ""
     });
 
     useEffect(() => {
@@ -61,9 +65,12 @@ export const Config = () => {
         }
     };
 
-    const handleSourceChange = (index: number, value: string) => {
+    const handleSourceChange = (index: number, field: 'source' | 'sector', value: string) => {
         const newSources = [...config.sources];
-        newSources[index] = value;
+        newSources[index] = {
+            ...newSources[index],
+            [field]: value,
+        };
         setConfig({
             ...config,
             sources: newSources,
@@ -126,14 +133,29 @@ export const Config = () => {
                                 <label>Nome</label>
                                 <input
                                     type="text"
-                                    value={source}
+                                    value={source.source}
                                     onChange={(e) =>
                                         handleSourceChange(
                                             index,
+                                            'source',
                                             e.target.value
                                         )
                                     }
                                     placeholder={`Câmera ${index + 1}`}
+                                />
+                                <h4>Setor</h4>
+                                <label>Setor onde a câmera está localizada</label>
+                                <input
+                                    type="text"
+                                    value={source.sector}
+                                    onChange={(e) =>
+                                        handleSourceChange(
+                                            index,
+                                            'sector',
+                                            e.target.value
+                                        )
+                                    }
+                                    placeholder={`Setor ${index + 1}`}
                                 />
                             </div>
                         ))}

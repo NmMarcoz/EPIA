@@ -12,7 +12,7 @@ export const getJuliaParameters = async(debug = false):Promise<string> =>{
   const store = await load("julia_config.json", { autoSave: false });
   const file = await store.get("config") as string;
   const config = JSON.parse(file) as ConfigState;
-  const cliParameters = `--source ${config.sources[0]} --interval ${config.logInterval} --processed_fps ${config.frameCount} ${debug ? "--debug" : ""} --model-path ${config.modelPath}`
+  const cliParameters = `--source ${config.sources[0].source} --sector ${config.sources[0].sector} --interval ${config.logInterval} --processed_fps ${config.frameCount} ${debug ? "--debug" : ""} --model-path ${config.modelPath}`
   console.log("cli parameters", cliParameters);
   return cliParameters
 }

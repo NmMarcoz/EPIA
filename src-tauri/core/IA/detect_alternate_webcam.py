@@ -20,6 +20,7 @@ parser.add_argument('--interval', type=int, help='Intervalo (em segundos) de dis
 parser.add_argument('--processed_fps', type = int, help='Quantidade de frames por segundo que deseja processar', default = 5)
 parser.add_argument('--debug', action='store_true', help="Ativa os logs de debug")
 parser.add_argument('--model-path', type=str, help='Caminho do modelo YOLO', default='./runs/detect/train2/weights/best.pt')
+parser.add_argument('--sector', type=str, help="id do setor", required=True)
 
 args = parser.parse_args()
 
@@ -77,7 +78,8 @@ log.info("Modelo carregado.")
 # Classes usadas no seu modelo
 classNames = ['helmet', 'vest']
 
-sector = "68435c0c486216841ad0e1df" #TODO -> mock. Esse funciona em release
+sector = args.sector
+log.info(f"SECTOR: {sector}")
 worker = "68436688e0d3f051ba5e258f"
 timestampz = datetime.now().timestamp() #isso aqui vai ser usado pra ver se o log ta mto cedo.
 myColor = (0, 0, 255)
@@ -201,15 +203,14 @@ def mountAndSendToEpi(sector,worker,removedEpi, remotionHour, allEpicorrects, de
 #aqui eu defini um intervalo pra não sobrecarregar o banco de dados.
 # Aqui é possível configurar pela cli.
 def tooEarly(date1, date2):
-    date1 = float(date1)
-    date2 = float(date2)
-    if isinstance(date1, float):  # se for timestamp
-        date1 = datetime.fromtimestamp(date1)
-    if isinstance(date2, float):  # se for timestamp
-        date2 = datetime.fromtimestamp(date2)
+    # Converte para datetime se for timestamp (float ou string)
+    if isinstance(date1, (float, int, str)):
+        date1 = datetime.fromtimestamp(float(date1))
+    if isinstance(date2, (float, int, str)):
+        date2 = datetime.fromtimestamp(float(date2))
 
     diff = date2 - date1
-    if diff >= timedelta(LOG_INTERVAL):
+    if diff >= timedelta(seconds=LOG_INTERVAL):
        log.debug(f"mais de {LOG_INTERVAL} segundos entre eles")
        return False
     return True

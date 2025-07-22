@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { useNavigate } from "react-router";
 import * as epiaProvider from "../../infra/providers/EpiaServerProvider"
 import { Log } from "../../utils/types/EpiaTypes"
+import { extractHourFromDateIso } from "../../utils/functions";
 import "./LogPage.css"
 
 
@@ -31,8 +32,9 @@ export const LogPage = () => {
     if (!logs.length) return <div className="container"><h2>Logs de Acesso</h2><p>Nenhum log encontrado.</p></div>;
 
     return (
-        <div className="container">
+        <div className="log-table-container">
             <h1 className="title">Logs de Conformidade</h1>
+            <p className="subtitle">Acompanhe os registros de conformidade dos setores. <br/>Clique em um para ver detalhes</p>
             <div className="table-container">
                 <table style={{ width: '100%', borderCollapse: 'collapse', background: '#fff', borderRadius: 8, boxShadow: '0 2px 8px #0001' }}>
                     <thead>
@@ -53,7 +55,7 @@ export const LogPage = () => {
                                 onClick={() => navigate(`/logs/${log.id}`)}
                             >
                                 <td style={{ border: '1px solid #eee', padding: 8 }}>{new Date(log.createdAt).toLocaleDateString()}</td>
-                                <td style={{ border: '1px solid #eee', padding: 8 }}>{log.remotionHour}</td>
+                                <td style={{ border: '1px solid #eee', padding: 8 }}>{extractHourFromDateIso(log.createdAt)}</td>
                                 <td style={{ border: '1px solid #eee', padding: 8 }}>{log.worker.name}</td>
                                 <td style={{ border: '1px solid #eee', padding: 8 }}>{log.sector.name}</td>
                                 <td style={{ border: '1px solid #eee', padding: 8 }}>{log.removedEpi || '-'}</td>

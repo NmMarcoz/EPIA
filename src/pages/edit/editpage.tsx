@@ -1,143 +1,166 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "../../globals.css";
 import "./editpage.css";
 import { invoke } from "@tauri-apps/api/core";
 import { Sector } from "../../utils/types/EpiaTypes";
 import { toast } from "sonner";
+import { useNavigate, useParams } from "react-router";
+import * as epiaServer from "../../infra/providers/EpiaServerProvider";
 
 interface EditPageProps {
     sector: Sector;
     onSectorUpdate?: (updatedSector: Sector) => void;
 }
 
-const EditPage = (props: EditPageProps) => {
-    const [sectorData, setSectorData] = useState<Sector>({
-        ...props.sector
-    });
-    
-    const handleInputChange = (field: keyof Sector, value: string | string[]) => {
-        setSectorData(prev => ({
+export const EditPage = () => {
+    const [sector, setSectorData] = useState<Sector | null>();
+    const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
+    const { sectorId } = useParams();
+    useEffect(()=>{
+      const fetchSector = async()=>{
+        setLoading(true)
+        const sector = await epiaServer.getSectorByCode(sectorId);
+        setSectorData(sector);
+        setLoading(false);
+      }
+      fetchSector();
+    }, [sectorId])
+
+    const handleInputChange = (
+        field: keyof Sector,
+        value: string | string[],
+    ) => {
+        setSectorData((prev) => ({
             ...prev,
-            [field]: value
+            [field]: value,
         }));
     };
 
     const handleRequirementChange = (index: number, value: string) => {
-        const newRules = [...sectorData.rules];
+        const newRules = [...sector!.rules];
         newRules[index] = value;
-        handleInputChange('rules', newRules);
+        handleInputChange("rules", newRules);
     };
 
     const handleAddRequirement = () => {
-        handleInputChange('rules', [...sectorData.rules, '']);
+        handleInputChange("rules", [...sector!.rules, ""]);
     };
 
     const handleRemoveRequirement = (index: number) => {
-        const newRules = sectorData.rules.filter((_, i) => i !== index);
-        handleInputChange('rules', newRules);
+        const newRules = sector!.rules.filter((_, i) => i !== index);
+        handleInputChange("rules", newRules);
     };
 
     const handleSaveChanges = async () => {
         try {
             const updates: Record<string, any> = {
-                name: sectorData.name, // Sempre envie o name
-                rules: sectorData.rules // Sempre envie as rules
+                name: sector!.name, // Sempre envie o name
+                rules: sector!.rules, // Sempre envie as rules
             };
 
-            const updatedSector = await invoke<Sector>('update_sector', {
-                code: props.sector.code,
-                sector: updates
+            const updatedSector = await invoke<Sector>("update_sector", {
+                code: sector!.code,
+                sector: updates,
             });
 
-            toast.success('Setor atualizado com sucesso!');
-            
-            if (props.onSectorUpdate) {
-                props.onSectorUpdate(updatedSector);
-            }
+            toast.success("Setor atualizado com sucesso!");
+            navigate("/sectors")
+
         } catch (error) {
-            console.error('Erro ao atualizar setor:', error);
-            toast.error('Erro ao salvar alterações');
+            console.error("Erro ao atualizar setor:", error);
+            toast.error("Erro ao salvar alterações");
         }
     };
-
-    return (
-        <div className="container">
-            <div className="content-area">
-                <div className="card">
-                    <h2>Editar sala</h2>
-                    <p>
-                        Edite as propriedades da sala e salve o resultado no
-                        botão abaixo.
-                    </p>
-                    <div className="form-group">
-                        <label>Nome</label>
-                        <input
-                            type="text"
-                            value={sectorData.name}
-                            onChange={(e) => handleInputChange('name', e.target.value)}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>Código</label>
-                        <input
-                            type="text"
-                            value={sectorData.code}
-                            disabled
-                            className="disabled-input"
-                        />
-                    </div>
+    {return loading ? <div className="loading-spinner"></div> : <div className="editpage-container">
+        <div className="editpage-content-area">
+            <div className="editpage-card">
+                <h2>Editar sala</h2>
+                <p>
+                    Edite as propriedades da sala e salve o resultado no
+                    botão abaixo.
+                </p>
+                <div className="editpage-form-group">
+                    <label>Nome</label>
+                    <input
+                        type="text"
+                        value={sector!.name}
+                        onChange={(e) =>
+                            handleInputChange("name", e.target.value)
+                        }
+                    />
                 </div>
+                <div className="editpage-form-group">
+                    <label>Código</label>
+                    <input
+                        type="text"
+                        value={sector!.code}
+                        disabled
+                        className="editpage-disabled-input"
+                    />
+                </div>
+            </div>
 
-                <div className="card requirements-card">
-                    <div className="requirements-header">
-                        <h2>Editar Requisitos</h2>
-                        <p>
-                            Edite os equipamentos necessários para adentrar a
-                            sala.
-                        </p>
-                    </div>
-                    <div className="requirements-container">
-                        {sectorData.rules.map((rule, index) => (
-                            <div className="form-group requirement-item" key={index}>
+            <div className="editpage-requirements-card">
+                <div className="editpage-requirements-header">
+                    <h2>Editar Requisitos</h2>
+                    <p>
+                        Edite os equipamentos necessários para adentrar a
+                        sala.
+                    </p>
+                </div>
+                <div className="editpage-requirements-container">
+                    {sector!.rules.map((rule, index) => (
+                        <div
+                            className="editpage-requirement-item"
+                            key={index}
+                        >
+                            <div className="editpage-form-group">
                                 <label>Item {index + 1}</label>
-                                <div className="requirement-input-group">
+                                <div className="editpage-requirement-input-group">
                                     <input
                                         type="text"
                                         value={rule}
                                         onChange={(e) =>
-                                            handleRequirementChange(index, e.target.value)
+                                            handleRequirementChange(
+                                                index,
+                                                e.target.value,
+                                            )
                                         }
                                     />
-                                    <button 
-                                        className="remove-button"
-                                        onClick={() => handleRemoveRequirement(index)}
+                                    <button
+                                        className="editpage-remove-button"
+                                        onClick={() =>
+                                            handleRemoveRequirement(index)
+                                        }
                                     >
                                         Remover
                                     </button>
                                 </div>
                             </div>
-                        ))}
-                    </div>
-                    <div className="button-container">
-                        <button 
-                            className="add-button"
-                            onClick={handleAddRequirement}
-                        >
-                            Adicionar Item
-                        </button>
-                        <button
-                            className="save-button"
-                            onClick={handleSaveChanges}
-                        >
-                            Salvar Mudanças
-                        </button>
-                    </div>
+                        </div>
+                    ))}
+                </div>
+                <div className="editpage-button-container">
+                    <button
+                        className="editpage-add-button"
+                        onClick={handleAddRequirement}
+                    >
+                        Adicionar Item
+                    </button>
+                    <button
+                        className="editpage-save-button"
+                        onClick={handleSaveChanges}
+                    >
+                        Salvar Mudanças
+                    </button>
                 </div>
             </div>
         </div>
-    );
+    </div>}
+
 };
 
 export default EditPage;

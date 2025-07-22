@@ -34,6 +34,7 @@ export const getWorkerByCardId = async (cardId: string): Promise<Worker> => {
 
 export const getSectors = async (): Promise<Sector[]> => {
     try {
+      
         const sectors = await epiaServer.get<Sector[]>(`/sectors`);
         if (!sectors) {
             throw new Error("Falha ao buscar setoores");
@@ -46,6 +47,7 @@ export const getSectors = async (): Promise<Sector[]> => {
 
 export const getSectorByCode = async (sectorCode: string): Promise<Sector> => {
     try {
+        console.log('sector code', sectorCode);
         const sector = await epiaServer.get<Sector>(`/sectors/${sectorCode}`);
         if (!sector) {
             throw new Error("Falha ao buscar setor");
