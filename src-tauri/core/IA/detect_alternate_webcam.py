@@ -80,7 +80,7 @@ classNames = ['helmet', 'vest']
 
 sector = args.sector
 log.info(f"SECTOR: {sector}")
-worker = "68436688e0d3f051ba5e258f"
+worker = "68409dcd1dd2847aacda219d"
 timestampz = datetime.now().timestamp() #isso aqui vai ser usado pra ver se o log ta mto cedo.
 myColor = (0, 0, 255)
 

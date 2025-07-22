@@ -9,7 +9,7 @@ const DashboardPage = () => {
 
     const runDashboard = async () => {
         const result = (await invoke("run_external_script", {
-            scriptName: "",
+            scriptName: "graficoEPIA.py",
         })) as string;
         setDashUrl(result);
         setLoading(true);

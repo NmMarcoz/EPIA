@@ -18,7 +18,7 @@ print("Modelo carregado.")
 classNames = ['helmet', 'vest']
 
 sector = "683b9484eba56adc64b60a28" #TODO -> mock. Esse funciona em release
-worker = "683b947ceba56adc64b60a25"
+worker = "68409dcd1dd2847aacda219d"
 timestampz = datetime.now().timestamp() #isso aqui vai ser usado pra ver se o log ta mto cedo.
 myColor = (0, 0, 255)
 

@@ -12,8 +12,6 @@ export const Config = () => {
     const [config, setConfig] = useState<ConfigState>({
         modelPath:
             "/Users/ruand/Desktop/Hackaton/EPIA/EPIA/src-tauri/core/IA/runs/detect/train2/weights/best.pt",
-        sources: ["", ""],
-            "/Users/nogueira/Desenvolvimento/Projetos/EPIA/src-tauri/core/IA/runs/detect/train2/weights/best.pt",
         sources: [
             { source: "", sector: "" },
             { source: "", sector: "" }
