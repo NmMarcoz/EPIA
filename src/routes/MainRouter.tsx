@@ -8,13 +8,14 @@ import { LogPage } from "../pages/logs/LogPage";
 import LogDetailed from "../pages/logs-detailed/LogDetailed";
 import DashboardPage from "../pages/dashboard/DashboardPage";
 import { SectorTable } from "../components/sector-table/SectorTable";
-import "../globals.css"
+import Acess from "../pages/acess/Acces";
+import "../globals.css";
 import EditPage from "..//pages/edit/editpage";
 export const MainRouter = () => {
     console.log("entrou pelo router");
     return (
         <BrowserRouter>
-          <ToastContainer/>
+            <ToastContainer />
             <Routes>
                 <Route element={<SideBar />}>
                     <Route path="/" element={<Homepage />} />
@@ -25,6 +26,7 @@ export const MainRouter = () => {
                     <Route path="/logs/:logId" element={<LogDetailed />} />
                     <Route path="/sectors" element={<SectorTable />} />
                     <Route path="/sectors/:sectorId" element={<EditPage />} />
+                    <Route path="/access" element={<Acess/>} />
                 </Route>
             </Routes>
         </BrowserRouter>

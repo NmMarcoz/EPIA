@@ -5,31 +5,67 @@
   box-sizing: border-box;
 }
 
+/* Variáveis CSS para consistência */
+:root {
+  --primary-bg: #0f172a;
+  --secondary-bg: #1d1f35;
+  --card-bg: #ffffff;
+  --border-color: #374151;
+  --text-primary: #f8fafc;
+  --text-secondary: #64748b;
+  --text-dark: #1e293b;
+  --admin-color: #2563eb;
+  --operator-color: #16a34a;
+  --hover-bg: rgba(59, 130, 246, 0.2);
+  --active-bg: rgba(59, 130, 246, 0.4);
+
+  /* Responsive spacing */
+  --spacing-xs: 0.5rem;
+  --spacing-sm: 0.75rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  --spacing-2xl: 3rem;
+
+  /* Responsive font sizes */
+  --font-xs: 0.75rem;
+  --font-sm: 0.875rem;
+  --font-base: 1rem;
+  --font-lg: 1.125rem;
+  --font-xl: 1.25rem;
+  --font-2xl: 1.5rem;
+  --font-3xl: 1.875rem;
+}
+
 /* Container Principal */
 .access-container {
   display: flex;
   min-height: 100vh;
   width: 100%;
-  background-color: #0f172a;
-  color: #f8fafc;
+  background-color: var(--primary-bg);
+  color: var(--text-primary);
+  flex-direction: column;
 }
 
 /* Sidebar */
 .sidebar {
-  width: 240px;
-  background-color: #1d1f35;
-  border-right: 1px solid #374151;
+  width: 100%;
+  background-color: var(--secondary-bg);
+  border-right: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
+  order: 2;
+  /* Adicionando transição suave para mudanças de layout */
+  transition: width 0.3s ease;
 }
 
 .sidebar-header {
-  padding: 1.5rem;
-  border-bottom: 1px solid #374151;
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .sidebar-title {
-  font-size: 1.5rem;
+  font-size: var(--font-lg);
   font-weight: bold;
   text-align: center;
   color: white;
@@ -37,39 +73,47 @@
 
 .sidebar-icons {
   display: flex;
-  flex-direction: column;
-  padding: 1.5rem;
-  gap: 1rem;
+  flex-direction: row;
+  padding: var(--spacing-md);
+  gap: var(--spacing-sm);
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 .sidebar-icon {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 1rem;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm) var(--spacing-md);
   border-radius: 0.5rem;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
   background: transparent;
   border: none;
   cursor: pointer;
   color: white;
-  text-align: left;
-  width: 100%;
+  text-align: center;
+  min-width: 4rem;
+  flex: 1;
+  max-width: 8rem;
 }
 
 .sidebar-icon:hover {
-  background-color: rgba(59, 130, 246, 0.2);
+  background-color: var(--hover-bg);
   transform: scale(1.05);
 }
 
 .sidebar-icon.active {
-  background-color: rgba(59, 130, 246, 0.4);
+  background-color: var(--active-bg);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 .icon-label {
-  font-size: 0.875rem;
+  font-size: var(--font-xs);
   font-weight: 500;
+  white-space: nowrap;
+  /* Melhorando transição para labels */
+  transition: opacity 0.2s ease;
 }
 
 /* Conteúdo Principal */
@@ -77,87 +121,98 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 2rem;
+  padding: var(--spacing-md);
+  order: 1;
+  /* Garantindo que o conteúdo sempre ocupe o espaço disponível */
+  min-width: 0;
 }
 
 /* Card Central */
 .content-card {
   flex: 1;
-  background-color: white;
+  background-color: var(--card-bg);
   border-radius: 0.75rem;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  padding: 2rem;
+  padding: var(--spacing-lg);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 1rem 0;
-  min-height: 500px;
+  margin: var(--spacing-md) 0;
+  min-height: 60vh;
+  animation: fadeIn 0.5s ease-out;
+  /* Melhorando adaptação em telas muito pequenas */
+  width: 100%;
+  max-width: 100%;
 }
 
 /* Header de Autenticação */
 .auth-header {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: var(--spacing-xl);
 }
 
 .auth-icon {
-  margin: 0 auto 1rem auto;
+  margin: 0 auto var(--spacing-md) auto;
 }
 
 .admin-icon {
-  color: #2563eb;
+  color: var(--admin-color);
 }
 
 .operator-icon {
-  color: #16a34a;
+  color: var(--operator-color);
 }
 
 .form-title {
-  font-size: 1.5rem;
+  font-size: var(--font-xl);
   font-weight: 600;
-  color: #1e293b;
+  color: var(--text-dark);
   line-height: 1.25;
+  margin-bottom: var(--spacing-xs);
 }
 
 .subtitle {
-  font-size: 1.125rem;
+  font-size: var(--font-base);
   font-weight: 400;
-  color: #64748b;
+  color: var(--text-secondary);
 }
 
 /* Formulário Administrador */
 .admin-form {
   width: 100%;
-  max-width: 24rem;
+  max-width: 100%;
 }
 
 .login-form {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: var(--spacing-lg);
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: var(--spacing-xs);
 }
 
 .form-label {
   display: block;
-  font-size: 0.875rem;
+  font-size: var(--font-sm);
   font-weight: 500;
   color: #334155;
 }
 
 .form-input {
   width: 100%;
-  padding: 0.75rem 1rem;
+  padding: var(--spacing-sm) var(--spacing-md);
   border: 1px solid #cbd5e1;
   border-radius: 0.5rem;
   background-color: #f8fafc;
-  color: #1e293b;
-  transition: all 0.2s;
+  color: var(--text-dark);
+  transition: all 0.2s ease;
+  font-size: var(--font-base);
+  /* Garantindo que inputs não quebrem em telas pequenas */
+  min-width: 0;
 }
 
 .form-input::placeholder {
@@ -173,12 +228,14 @@
 
 .auth-button {
   width: 100%;
-  padding: 0.75rem 1rem;
+  padding: var(--spacing-sm) var(--spacing-md);
   font-weight: 500;
+  font-size: var(--font-base);
   border-radius: 0.5rem;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
   cursor: pointer;
   border: none;
+  min-height: 2.75rem;
 }
 
 .auth-button:disabled {
@@ -187,7 +244,7 @@
 }
 
 .admin-button {
-  background-color: #2563eb;
+  background-color: var(--admin-color);
   color: white;
 }
 
@@ -198,7 +255,7 @@
 }
 
 .operator-button {
-  background-color: #16a34a;
+  background-color: var(--operator-color);
   color: white;
 }
 
@@ -209,54 +266,57 @@
 }
 
 .auth-info {
-  margin-top: 1.5rem;
-  padding: 1rem;
+  margin-top: var(--spacing-lg);
+  padding: var(--spacing-md);
   background-color: #f8fafc;
   border-radius: 0.5rem;
 }
 
 .info-text {
-  font-size: 0.875rem;
-  color: #64748b;
+  font-size: var(--font-sm);
+  color: var(--text-secondary);
   text-align: center;
+  line-height: 1.5;
 }
 
 /* Interface Operário */
 .operator-interface {
   width: 100%;
-  max-width: 32rem;
+  max-width: 100%;
   text-align: center;
 }
 
 /* Wrapper para o componente WebcamCapture */
 .webcam-wrapper {
   width: 100%;
-  height: 20rem;
+  height: 50vw;
+  max-height: 20rem;
+  min-height: 12rem;
   border-radius: 0.5rem;
   overflow: hidden;
   border: 2px solid #cbd5e1;
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--spacing-lg);
   background-color: #f1f5f9;
   position: relative;
+  /* Melhorando proporção da webcam em diferentes telas */
+  aspect-ratio: 4 / 3;
 }
 
-/* Estilos para sobrescrever o componente WebcamCapture se necessário */
 .webcam-wrapper video {
   width: 100% !important;
   height: 100% !important;
   object-fit: cover !important;
 }
 
-/* Overlay para indicar área de scan */
 .webcam-wrapper::after {
   content: "";
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 12rem;
-  height: 12rem;
-  border: 4px solid #16a34a;
+  width: min(12rem, 60%);
+  height: min(12rem, 60%);
+  border: 4px solid var(--operator-color);
   border-radius: 0.5rem;
   animation: scanPulse 2s infinite;
   pointer-events: none;
@@ -267,12 +327,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.75rem;
-  margin-bottom: 1.5rem;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-lg);
+  flex-wrap: wrap;
 }
 
 .status-text {
-  font-size: 1.125rem;
+  font-size: var(--font-base);
   font-weight: 500;
   color: #334155;
 }
@@ -284,7 +345,7 @@
 .pulse-dot {
   width: 0.75rem;
   height: 0.75rem;
-  background-color: #16a34a;
+  background-color: var(--operator-color);
   border-radius: 9999px;
   animation: pulse 1.5s infinite;
 }
@@ -323,38 +384,368 @@
   }
 }
 
-.content-card {
-  animation: fadeIn 0.5s ease-out;
+/* Media Queries - Mobile First Approach */
+
+/* Smartphones muito pequenos (até 320px) */
+@media (max-width: 20rem) {
+  :root {
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.375rem;
+    --spacing-md: 0.5rem;
+    --spacing-lg: 0.75rem;
+    --spacing-xl: 1rem;
+    --spacing-2xl: 1.25rem;
+
+    --font-xs: 0.65rem;
+    --font-sm: 0.75rem;
+    --font-base: 0.85rem;
+    --font-lg: 0.95rem;
+    --font-xl: 1.05rem;
+    --font-2xl: 1.15rem;
+  }
+
+  .content-card {
+    padding: var(--spacing-sm);
+    margin: var(--spacing-xs) 0;
+    min-height: 45vh;
+  }
+
+  .sidebar-icons {
+    padding: var(--spacing-xs);
+    gap: 0.125rem;
+  }
+
+  .sidebar-icon {
+    padding: var(--spacing-xs);
+    min-width: 2.5rem;
+    font-size: 0.7rem;
+  }
+
+  .icon-label {
+    display: none;
+  }
+
+  .webcam-wrapper {
+    height: 70vw;
+    max-height: 12rem;
+    min-height: 10rem;
+  }
 }
 
-/* Responsividade */
-@media (max-width: 768px) {
+/* Smartphones pequenos (321px - 480px) */
+@media (min-width: 20.0625rem) and (max-width: 30rem) {
+  :root {
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 0.75rem;
+    --spacing-lg: 1rem;
+    --spacing-xl: 1.25rem;
+    --spacing-2xl: 1.5rem;
+
+    --font-xs: 0.7rem;
+    --font-sm: 0.8rem;
+    --font-base: 0.9rem;
+    --font-lg: 1rem;
+    --font-xl: 1.125rem;
+    --font-2xl: 1.25rem;
+  }
+
+  .content-card {
+    padding: var(--spacing-md);
+    margin: var(--spacing-sm) 0;
+    min-height: 50vh;
+  }
+
+  .sidebar-icons {
+    gap: var(--spacing-xs);
+    padding: var(--spacing-sm);
+  }
+
+  .sidebar-icon {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    min-width: 3rem;
+  }
+
+  .icon-label {
+    display: none;
+  }
+
+  .webcam-wrapper {
+    height: 60vw;
+    max-height: 15rem;
+  }
+}
+
+/* Smartphones (481px - 768px) */
+@media (min-width: 30.0625rem) and (max-width: 48rem) {
+  .sidebar-icon {
+    flex: 0 1 auto;
+    min-width: 5rem;
+  }
+
+  .icon-label {
+    font-size: var(--font-xs);
+  }
+
+  .admin-form {
+    max-width: 20rem;
+    /* Garantindo margem automática para centralização */
+    margin: 0 auto;
+  }
+
+  .operator-interface {
+    max-width: 24rem;
+    margin: 0 auto;
+  }
+
+  .webcam-wrapper {
+    /* Melhorando proporção em smartphones */
+    height: auto;
+    max-height: 18rem;
+  }
+}
+
+/* Tablets (769px - 1024px) */
+@media (min-width: 48.0625rem) and (max-width: 64rem) {
+  .access-container {
+    flex-direction: row;
+  }
+
+  .sidebar {
+    width: 200px;
+    order: 1;
+    /* Garantindo largura mínima */
+    min-width: 180px;
+  }
+
+  .sidebar-icons {
+    flex-direction: column;
+    padding: var(--spacing-lg);
+  }
+
+  .sidebar-icon {
+    width: 100%;
+    justify-content: flex-start;
+    max-width: none;
+  }
+
+  .icon-label {
+    display: block;
+  }
+
+  .main-content {
+    order: 2;
+    padding: var(--spacing-lg);
+  }
+
+  .admin-form {
+    max-width: 22rem;
+    margin: 0 auto;
+  }
+
+  .operator-interface {
+    max-width: 28rem;
+    margin: 0 auto;
+  }
+
+  .webcam-wrapper {
+    max-height: 22rem;
+  }
+}
+
+/* Desktop pequeno (1025px - 1200px) */
+@media (min-width: 64.0625rem) and (max-width: 75rem) {
+  .sidebar {
+    width: 240px;
+    min-width: 220px;
+  }
+
+  .main-content {
+    padding: var(--spacing-xl);
+  }
+
+  .admin-form {
+    max-width: 24rem;
+    margin: 0 auto;
+  }
+
+  .operator-interface {
+    max-width: 32rem;
+    margin: 0 auto;
+  }
+
+  .webcam-wrapper {
+    max-height: 24rem;
+  }
+}
+
+/* Desktop grande (1201px+) */
+@media (min-width: 75.0625rem) {
+  .access-container {
+    flex-direction: row;
+  }
+
+  .sidebar {
+    width: 280px;
+    order: 1;
+    min-width: 260px;
+  }
+
+  .sidebar-icons {
+    flex-direction: column;
+    padding: var(--spacing-xl);
+    gap: var(--spacing-md);
+  }
+
+  .sidebar-icon {
+    width: 100%;
+    justify-content: flex-start;
+    padding: var(--spacing-md) var(--spacing-lg);
+    max-width: none;
+  }
+
+  .main-content {
+    order: 2;
+    padding: var(--spacing-2xl);
+  }
+
+  .content-card {
+    padding: var(--spacing-2xl);
+    margin: var(--spacing-lg) 0;
+  }
+
+  .form-title {
+    font-size: var(--font-2xl);
+  }
+
+  .subtitle {
+    font-size: var(--font-lg);
+  }
+
+  .admin-form {
+    max-width: 26rem;
+    margin: 0 auto;
+  }
+
+  .operator-interface {
+    max-width: 36rem;
+    margin: 0 auto;
+  }
+
+  .webcam-wrapper {
+    max-height: 26rem;
+  }
+}
+
+/* Telas ultra-wide (1400px+) */
+@media (min-width: 87.5rem) {
+  .sidebar {
+    width: 320px;
+  }
+
+  .admin-form {
+    max-width: 28rem;
+  }
+
+  .operator-interface {
+    max-width: 40rem;
+  }
+}
+
+/* Orientação landscape para dispositivos móveis */
+@media (max-width: 48rem) and (orientation: landscape) {
+  .access-container {
+    flex-direction: row;
+  }
+
+  .sidebar {
+    width: 200px;
+    order: 1;
+    min-width: 160px;
+  }
+
+  .sidebar-icons {
+    flex-direction: column;
+    padding: var(--spacing-sm);
+    gap: var(--spacing-xs);
+  }
+
+  .sidebar-icon {
+    width: 100%;
+    justify-content: center;
+    padding: var(--spacing-xs);
+    max-width: none;
+  }
+
+  .icon-label {
+    display: none;
+  }
+
+  .main-content {
+    order: 2;
+    padding: var(--spacing-md);
+  }
+
+  .content-card {
+    min-height: 40vh;
+  }
+
+  .webcam-wrapper {
+    height: 40vh;
+    max-height: none;
+    /* Melhorando proporção em landscape */
+    aspect-ratio: 16 / 9;
+  }
+}
+
+/* Melhorias para acessibilidade */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Modo escuro automático */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --card-bg: #1e293b;
+    --text-dark: #f8fafc;
+  }
+}
+
+/* Print styles */
+@media print {
+  .sidebar {
+    display: none;
+  }
+
   .access-container {
     flex-direction: column;
   }
 
-  .sidebar {
-    width: 100%;
-    height: auto;
-  }
-
-  .sidebar-icons {
-    flex-direction: row;
-    justify-content: center;
-    gap: 1rem;
-    padding: 1rem;
-  }
-
-  .sidebar-icon {
-    width: auto;
-  }
-
   .content-card {
-    margin: 1rem;
-    padding: 1rem;
-  }
-
-  .webcam-wrapper {
-    height: 15rem;
+    box-shadow: none;
+    border: 1px solid #000;
   }
 }
+
+/* Adicionando suporte para telas de alta densidade */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .webcam-wrapper::after {
+    border-width: 2px;
+  }
+}
+
+/* Melhorias para dispositivos com hover limitado */
+@media (hover: none) {
+  .sidebar-icon:hover {
+    transform: none;
+  }
+
+  .auth-button:hover:not(:disabled) {
+    transform: none;
+  }
+}
+  

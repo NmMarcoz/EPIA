@@ -4,7 +4,7 @@ import { invoke } from "@tauri-apps/api/core";
 import { Homepage } from "./pages/home/homepage";
 import EditPage from "./pages/edit/editpage";
 import { WebcamCapture } from "./pages/webcam/WebcamModal";
-import Acess from "./pages/acess/Acess";
+import Acess from "./pages/acess/Acces.tsx";
 import "./App.css";
 import DashboardPage from "./pages/dashboard/DashboardPage";
 import type { Sector, UserSession, Worker } from "./utils/types/EpiaTypes.ts";
