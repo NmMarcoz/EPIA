@@ -9,10 +9,10 @@ import { toast } from "sonner";
 import { useNavigate, useParams } from "react-router";
 import * as epiaServer from "../../infra/providers/EpiaServerProvider";
 
-interface EditPageProps {
-    sector: Sector;
-    onSectorUpdate?: (updatedSector: Sector) => void;
-}
+    interface EditPageProps {
+        sector: Sector;
+        onSectorUpdate?: (updatedSector: Sector) => void;
+    }
 
 export const EditPage = () => {
     const [sector, setSectorData] = useState<Sector | null>();

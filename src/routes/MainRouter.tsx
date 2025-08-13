@@ -10,7 +10,7 @@ import DashboardPage from "../pages/dashboard/DashboardPage";
 import { SectorTable } from "../components/sector-table/SectorTable";
 import Acess from "../pages/acess/Acces";
 import "../globals.css";
-import EditPage from "..//pages/edit/editpage";
+import EditPage from "../pages/edit/Editpage";
 export const MainRouter = () => {
     console.log("entrou pelo router");
     return (
@@ -27,6 +27,7 @@ export const MainRouter = () => {
                     <Route path="/sectors" element={<SectorTable />} />
                     <Route path="/sectors/:sectorId" element={<EditPage />} />
                     <Route path="/access" element={<Acess/>} />
+                    <Route path="/edit" element={<EditPage/>} />
                 </Route>
             </Routes>
         </BrowserRouter>

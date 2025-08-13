@@ -2,7 +2,7 @@
 import { useState, useRef, useContext } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { Homepage } from "./pages/home/homepage";
-import EditPage from "./pages/edit/editpage";
+import EditPage from "./pages/edit/Editpage.tsx";
 import { WebcamCapture } from "./pages/webcam/WebcamModal";
 import Acess from "./pages/acess/Acces.tsx";
 import "./App.css";

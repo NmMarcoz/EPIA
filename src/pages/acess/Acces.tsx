@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Camera, Shield } from "lucide-react";
+import { Shield } from "lucide-react";
 import "./Acess.css";
 
 const Acess: React.FC = () => {
