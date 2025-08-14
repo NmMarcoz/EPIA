@@ -4,22 +4,17 @@ import "./SectorTable.css";
 import * as epiaServer from "../../infra/providers/EpiaServerProvider";
 import { useNavigate } from "react-router";
 
-interface SectorTableProps {
-    sectors: Sector[];
-}
 
-
-
-export const SectorTable: React.FC<SectorTableProps> = () => {
+export const SectorTable = () => {
     const [sectors, setSectors] = useState<Sector[]>([]);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
-    const handleSectorClick = (sector: Sector) => {
-        console.log('Sector clicked:', sector);
-    };
+    // const handleSectorClick = (sector: Sector) => {
+    //     console.log('Sector clicked:', sector);
+    // };
 
     useEffect(()=>{
-        // Fetch sectors from API or any data source
+        // Fetch sectors from API or any data sourcels
         const fetchSectors = async () => {
             const sectors = await epiaServer.getSectors();
             setSectors(sectors);
