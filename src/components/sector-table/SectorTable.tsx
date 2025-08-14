@@ -4,8 +4,13 @@ import "./SectorTable.css";
 import * as epiaServer from "../../infra/providers/EpiaServerProvider";
 import { useNavigate } from "react-router";
 
+interface SectorTableProps {
+    sectors: Sector[];
+}
 
-export const SectorTable = () => {
+
+
+export const SectorTable: React.FC<SectorTableProps> = () => {
     const [sectors, setSectors] = useState<Sector[]>([]);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
