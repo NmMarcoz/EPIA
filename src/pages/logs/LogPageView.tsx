@@ -1,8 +1,8 @@
 // LogPage.tsx
 import { useNavigate } from "react-router";
 import { extractHourFromDateIso } from "../../utils/functions";
-import { useLogsViewModel } from "./LogViewModel";
-import "./LogPage.css";
+import { useLogsViewModel } from "./LogPageViewModel";
+import "./LogPageStyle.css";
 
 export const LogPage = () => {
     const navigate = useNavigate();

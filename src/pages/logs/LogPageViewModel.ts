@@ -1,6 +1,6 @@
 // viewmodels/useLogsViewModel.ts
 import { useState, useEffect, useCallback } from "react";
-import { LogService } from "./LogModel";
+import { LogService } from "./LogPageModel";
 import { Log } from "../../utils/types/EpiaTypes";
 
 export const useLogsViewModel = () => {

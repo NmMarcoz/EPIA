@@ -5,7 +5,7 @@ import {
     retrieveConfig, 
     storeConfig, 
     getStorageCOnfig 
-} from "./ConfigModel";
+} from "./ConfigPageModel";
 import { open, save } from "@tauri-apps/plugin-dialog";
 import { toast } from "react-toastify";
 

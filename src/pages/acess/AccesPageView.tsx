@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { Shield } from "lucide-react";
-import "./Acess.css";
+import "./AcessPageStyles.css";
 
 const Acess: React.FC = () => {
   const [authMode, setAuthMode] = useState<"operator" | "admin">("operator");

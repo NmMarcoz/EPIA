@@ -1,16 +1,16 @@
 import { BrowserRouter, Routes, Route } from "react-router";
-import { Homepage } from "../pages/home/homepage";
-import { AuthPage } from "../pages/auth/AuthPage";
+import { Homepage } from "../pages/home/HomePageView";
+import { AuthPage } from "../pages/auth/AuthPageView";
 import { SideBar } from "../components/sidebar/Sidebar";
-import { Config } from "../pages/config/Config";
+import { Config } from "../pages/config/ConfigPageView";
 import { ToastContainer } from "react-toastify";
-import { LogPage } from "../pages/logs/LogPage";
-import LogDetailed from "../pages/logs-detailed/LogDetailed";
-import DashboardPage from "../pages/dashboard/DashboardPage";
+import { LogPage } from "../pages/logs/LogPageView.tsx";
+import LogDetailed from "../pages/logs-detailed/LogDetailedPageView.tsx";
+import DashboardPage from "../pages/dashboard/DashboarPageView.ts";
 import { SectorTable } from "../components/sector-table/SectorTable";
-import Acess from "../pages/acess/Acces";
+import Acess from "../pages/acess/AccesPageView";
 import "../globals.css";
-import EditPage from "../pages/edit/Editpage";
+import EditPage from "../pages/edit/EditPageView.tsx";
 export const MainRouter = () => {
     console.log("entrou pelo router");
     return (

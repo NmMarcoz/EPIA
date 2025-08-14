@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import * as epiaProvider from "../../infra/providers/EpiaServerProvider";
 import { Log } from "../../utils/types/EpiaTypes";
-import "./LogDetailed.css";
+import "./LogDetailedStyle.css";
 
 const LogDetailed: React.FC = () => {
   const { logId } = useParams<{ logId: string }>();

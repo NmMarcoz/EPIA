@@ -1,5 +1,5 @@
-import "./Config.css";
-import { useConfigViewModel } from "./ConfigViewModel";
+import "./ConfigPageStyles.css";
+import { useConfigViewModel } from "./ConfigPageViewModel";
 
 export const Config = () => {
     const {

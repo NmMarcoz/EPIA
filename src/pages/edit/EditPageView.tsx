@@ -2,8 +2,8 @@
 
 
 import "../../globals.css";
-import "./editpage.css";
-import { useSectorEditorViewModel } from "./EditViewModel";
+import "./EditPageStyle.css";
+import { useSectorEditorViewModel } from "./EditPageViewModel";
 
 
 

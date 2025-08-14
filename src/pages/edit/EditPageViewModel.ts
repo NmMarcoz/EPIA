@@ -1,6 +1,6 @@
 // viewmodels/useSectorEditorViewModel.ts
 import { useState, useEffect, useCallback } from "react";
-import SectorService from "./EditModel";
+import SectorService from "./EditPageModel";
 import { Sector } from "../../utils/types/EpiaTypes";
 import { useNavigate, useParams } from "react-router";
 import { toast } from "sonner";

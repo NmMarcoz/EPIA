@@ -1,5 +1,5 @@
 import "./HomepageStyles.css";
-import * as viewModel from "./homepageViewModel"
+import * as viewModel from "./HomePageViewModel"
 export const Homepage = () => {
   const handleIa = async(debug = false)=>{
     await viewModel.launchJulia(debug);

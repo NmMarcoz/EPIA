@@ -1,6 +1,6 @@
 import { invoke } from "@tauri-apps/api/core";
 import { useEffect, useState } from "react";
-import "./Dashboard.css";
+import "./DashboardPageStyles.css";
 import axios from "axios";
 
 const DashboardPage = () => {
