@@ -1,81 +1,19 @@
-import { useEffect, useState } from "react";
 import "./Config.css";
-import { ConfigState } from "../../utils/types/InternalTypes.dt";
-import * as viewModel from "./ConfigViewModel";
-import { open, save } from "@tauri-apps/plugin-dialog";
-import { toast } from "react-toastify";
+import { useConfigViewModel } from "./ConfigViewModel";
 
 export const Config = () => {
-    const [activeTab, setActiveTab] = useState<"sources" | "performance">(
-        "sources"
-    );
-    const [config, setConfig] = useState<ConfigState>({
-        modelPath:
-            "/Users/ruand/Desktop/Hackaton/EPIA/EPIA/src-tauri/core/IA/runs/detect/train2/weights/best.pt",
-        sources: [
-            { source: "", sector: "" },
-            { source: "", sector: "" }
-        ],
-        logInterval: 5,
-        frameCount: 5,
-        sector: ""
-    });
-
-    useEffect(() => {
-        viewModel.getStorageCOnfig().then((storedConfig) => {
-            if (storedConfig) setConfig(storedConfig);
-        });
-    }, []);
-
-    const handleSave = async () => {
-        //console.log("Configuração salva:", config);
-        await viewModel.storeConfig(config);
-        toast.success("configuração salva!");
-    };
-
-    const handleImport = async () => {
-        const selected = await open({
-            multiple: false,
-        });
-        if (selected) {
-            viewModel.retrieveConfig(selected).then((config) => {
-                if (config) {
-                    setConfig(config);
-                } else {
-                    console.log("falha ao pegar a configuração");
-                }
-            });
-        }
-    };
-
-    const handleExport = async () => {
-        if (config) {
-            const path = await save({
-                filters: [
-                    {
-                        name: "julia_parameters",
-                        extensions: ["json"],
-                    },
-                ],
-            });
-            if (path) {
-                viewModel.saveConfig(config, path);
-                toast.success("Configuração exportada com sucesso!");
-            }
-        }
-    };
-
-    const handleSourceChange = (index: number, field: 'source' | 'sector', value: string) => {
-        const newSources = [...config.sources];
-        newSources[index] = {
-            ...newSources[index],
-            [field]: value,
-        };
-        setConfig({
-            ...config,
-            sources: newSources,
-        });
-    };
+    const {
+        activeTab,
+        setActiveTab,
+        config,
+        handleSave,
+        handleImport,
+        handleExport,
+        handleSourceChange,
+        handleModelPathChange,
+        handleLogIntervalChange,
+        handleFrameCountChange
+    } = useConfigViewModel();
 
     return (
         <div className="config-container">
@@ -107,12 +45,7 @@ export const Config = () => {
                             <input
                                 type="text"
                                 value={config.modelPath}
-                                onChange={(e) =>
-                                    setConfig({
-                                        ...config,
-                                        modelPath: e.target.value,
-                                    })
-                                }
+                                onChange={(e) => handleModelPathChange(e.target.value)}
                                 placeholder="/models/best.pt"
                             />
                             <button className="secondary-button">
@@ -135,11 +68,7 @@ export const Config = () => {
                                     type="text"
                                     value={source.source}
                                     onChange={(e) =>
-                                        handleSourceChange(
-                                            index,
-                                            'source',
-                                            e.target.value
-                                        )
+                                        handleSourceChange(index, 'source', e.target.value)
                                     }
                                     placeholder={`Câmera ${index + 1}`}
                                 />
@@ -149,11 +78,7 @@ export const Config = () => {
                                     type="text"
                                     value={source.sector}
                                     onChange={(e) =>
-                                        handleSourceChange(
-                                            index,
-                                            'sector',
-                                            e.target.value
-                                        )
+                                        handleSourceChange(index, 'sector', e.target.value)
                                     }
                                     placeholder={`Setor ${index + 1}`}
                                 />
@@ -185,12 +110,7 @@ export const Config = () => {
                         <input
                             type="number"
                             value={config.logInterval}
-                            onChange={(e) =>
-                                setConfig({
-                                    ...config,
-                                    logInterval: Number(e.target.value),
-                                })
-                            }
+                            onChange={(e) => handleLogIntervalChange(Number(e.target.value))}
                             min="1"
                         />
 
@@ -203,12 +123,7 @@ export const Config = () => {
                         <input
                             type="number"
                             value={config.frameCount}
-                            onChange={(e) =>
-                                setConfig({
-                                    ...config,
-                                    frameCount: Number(e.target.value),
-                                })
-                            }
+                            onChange={(e) => handleFrameCountChange(Number(e.target.value))}
                             min="1"
                         />
                     </div>
@@ -230,17 +145,13 @@ export const Config = () => {
 
                 <div className="tab-buttons">
                     <button
-                        className={`tab-button ${
-                            activeTab === "sources" ? "active" : ""
-                        }`}
+                        className={`tab-button ${activeTab === "sources" ? "active" : ""}`}
                         onClick={() => setActiveTab("sources")}
                     >
                         Sources de Vídeo e Modelo
                     </button>
                     <button
-                        className={`tab-button ${
-                            activeTab === "performance" ? "active" : ""
-                        }`}
+                        className={`tab-button ${activeTab === "performance" ? "active" : ""}`}
                         onClick={() => setActiveTab("performance")}
                     >
                         Performance

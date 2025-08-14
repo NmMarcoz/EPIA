@@ -1,65 +1,93 @@
+import { useState, useEffect } from "react";
 import { ConfigState } from "../../utils/types/InternalTypes.dt";
-import { invoke } from "@tauri-apps/api/core";
-import { load } from "@tauri-apps/plugin-store";
+import { 
+    saveConfig, 
+    retrieveConfig, 
+    storeConfig, 
+    getStorageCOnfig 
+} from "./ConfigModel";
+import { open, save } from "@tauri-apps/plugin-dialog";
+import { toast } from "react-toastify";
 
-export const saveConfig = async (config: ConfigState, path: string) => {
-    try {
-        const jsonString = JSON.stringify(config);
-        console.log("config: ", jsonString);
-        await invoke("save_file", {
-            path: path,
-            content: jsonString,
-        });
+export const useConfigViewModel = () => {
+    const [activeTab, setActiveTab] = useState<"sources" | "performance">("sources");
+    const [config, setConfig] = useState<ConfigState>({
+        modelPath: "",
+        sources: [
+            { source: "", sector: "" },
+            { source: "", sector: "" }
+        ],
+        logInterval: 5,
+        frameCount: 5,
+        sector: ""
+    });
+
+    useEffect(() => {
+        const loadConfig = async () => {
+            const storedConfig = await getStorageCOnfig();
+            if (storedConfig) setConfig(storedConfig);
+        };
+        loadConfig();
+    }, []);
+
+    const handleSave = async () => {
         await storeConfig(config);
-    } catch (error) {
-        console.log("error saving config", error);
-        return null;
-    }
-};
+        toast.success("Configuração salva!");
+    };
 
-export const retrieveConfig = async (
-    path: string,
-): Promise<ConfigState | null> => {
-    try {
-        const file = (await invoke("open_file", {
-            path: path,
-        })) as string;
-        const parsed = JSON.parse(file) as ConfigState;
-        console.log("parsed", parsed);
-
-        const store = await load("julia_config.json", { autoSave: false });
-        await store.set("config", file);
-        await store.save();
-
-        return parsed;
-    } catch (error) {
-        console.error("Error retrieving config:", error);
-        return null;
-    }
-};
-
-export const storeConfig = async (config: ConfigState) => {
-    try {
-        const jsonString = JSON.stringify(config);
-        console.log("config no store: ", jsonString)
-        const store = await load("julia_config.json", { autoSave: false });
-        await store.set("config", jsonString);
-        await store.save();
-    } catch (error) {
-        console.log("error while storing the config", error);
-    }
-};
-
-export const getStorageCOnfig = async (): Promise<ConfigState | null> => {
-    try {
-        const store = await load("julia_config.json", { autoSave: false });
-        const config = await store.get("config") as string;
-        if(config){
-            return JSON.parse(config) as ConfigState;
+    const handleImport = async () => {
+        const selected = await open({ multiple: false });
+        if (selected) {
+            const importedConfig = await retrieveConfig(selected);
+            if (importedConfig) {
+                setConfig(importedConfig);
+                toast.success("Configuração importada!");
+            } else {
+                toast.error("Falha ao importar configuração");
+            }
         }
-        return null
-    } catch (error) {
-        console.error("Error retrieving config from storage:", error);
-        return null;
-    }
-}
+    };
+
+    const handleExport = async () => {
+        if (config) {
+            const path = await save({
+                filters: [{ name: "julia_parameters", extensions: ["json"] }],
+            });
+            if (path) {
+                await saveConfig(config, path);
+                toast.success("Configuração exportada!");
+            }
+        }
+    };
+
+    const handleSourceChange = (index: number, field: 'source' | 'sector', value: string) => {
+        const newSources = [...config.sources];
+        newSources[index] = { ...newSources[index], [field]: value };
+        setConfig({ ...config, sources: newSources });
+    };
+
+    const handleModelPathChange = (value: string) => {
+        setConfig({ ...config, modelPath: value });
+    };
+
+    const handleLogIntervalChange = (value: number) => {
+        setConfig({ ...config, logInterval: value });
+    };
+
+    const handleFrameCountChange = (value: number) => {
+        setConfig({ ...config, frameCount: value });
+    };
+
+    return {
+        activeTab,
+        setActiveTab,
+        config,
+        handleSave,
+        handleImport,
+        handleExport,
+        handleSourceChange,
+        handleModelPathChange,
+        handleLogIntervalChange,
+        handleFrameCountChange
+    };
+};
