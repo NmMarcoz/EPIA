@@ -1,20 +1,20 @@
 
-import { invoke } from "@tauri-apps/api/core";
-import React, { useEffect, useState } from "react";
+// import { invoke } from "@tauri-apps/api/core";
+// import React, { useEffect, useState } from "react";
 import "../../globals.css";
 import "./Dashboard.css";
-import { Dash } from "../components/Dash";
+import {Dash} from "../../components/dashboard/Dash";
 
 const Geral = () => {
 
 
-    const runDashboard = async () => {
-        const result = (await invoke("run_external_script", {
-            scriptName: "geral"
-        })) as string;
-        console.log("Dashboard URL:", result);
+    // const runDashboard = async () => {
+    //     const result = (await invoke("run_external_script", {
+    //         scriptName: "geral"
+    //     })) as string;
+    //     console.log("Dashboard URL:", result);
  
-    };
+    // };
 
     // const handleSelected = (dash: string) => {
     //     console.log("Selected dashboard:", dash);
@@ -94,4 +94,4 @@ const Geral = () => {
     );
 };
 
-export default DashboardPage;
+export default Geral;
