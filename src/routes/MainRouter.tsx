@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router";
 import { Homepage } from "../pages/home/HomePageView";
-import { AuthPage } from "../pages/auth/AuthPageView";
+// import { AuthPage } from "../pages/auth/AuthPageView";
 import { SideBar } from "../components/sidebar/Sidebar";
 import { Config } from "../pages/config/ConfigPageView";
 import { ToastContainer } from "react-toastify";
@@ -9,6 +9,7 @@ import LogDetailed from "../pages/logs-detailed/LogDetailedPageView.tsx";
 import DashboardPage from "../pages/dashboard/DashboarPageView.ts";
 import { SectorTable } from "../components/sector-table/SectorTable";
 import Acess from "../pages/acess/AccesPageView";
+
 import "../globals.css";
 import EditPage from "../pages/edit/EditPageView.tsx";
 export const MainRouter = () => {
