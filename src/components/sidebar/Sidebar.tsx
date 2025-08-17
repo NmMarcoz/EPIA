@@ -62,6 +62,9 @@ export const SideBar = () => {
                                 <li className="sidebar-nav">
                                     <Link className = {isActive("/sectors") ? "active" : ""} to="/sectors">Setores</Link>
                                 </li>
+                                <li className="sidebar-nav">
+                                    <Link className = {isActive("/agendamento") ? "active" : ""} to="/agendamento">Agendamento</Link>
+                                </li>
                             </ul>
                         </nav>
                     </div>

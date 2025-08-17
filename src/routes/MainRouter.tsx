@@ -9,7 +9,7 @@ import LogDetailed from "../pages/logs-detailed/LogDetailedPageView.tsx";
 import DashboardPage from "../pages/dashboard/DashboarPageView.ts";
 import { SectorTable } from "../components/sector-table/SectorTable";
 import Acess from "../pages/acess/AccesPageView";
-
+import {Agendamento} from "../pages/agendamento/AgendamentoPageView";
 import "../globals.css";
 import EditPage from "../pages/edit/EditPageView.tsx";
 export const MainRouter = () => {
@@ -28,6 +28,7 @@ export const MainRouter = () => {
                     <Route path="/sectors" element={<SectorTable />} />
                     <Route path="/sectors/:sectorId" element={<EditPage />} />
                     <Route path="/access" element={<Acess />} />
+                    <Route path="/agendamento" element={<Agendamento/>} />
                 </Route>
             </Routes>
         </BrowserRouter>
