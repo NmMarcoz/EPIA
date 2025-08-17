@@ -1,0 +1,222 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: #f5f5f5;
+    overflow-x: hidden;
+}
+
+.configuracao {
+    display: flex;
+    flex-direction: column;
+    width: 826px;
+    min-height: 100vh;  
+    margin: 0 auto;
+    padding-bottom: 20px; 
+    
+}
+
+.secao1 {
+    border: 2px solid #00000024;
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    width: 100%;
+    max-width: 1200px;
+    background-color: white;
+    border-radius: 8px;
+    margin-top: 40px;
+    margin-bottom: 10px;
+}
+
+.secao1  h1 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #000;
+    margin-bottom: 8px;
+}
+
+.secao1 p {
+    font-size: 16px;
+    color: #666;
+}
+
+.secao2 {
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    width: 100%;
+    max-width: 1200px;
+    border-radius: 8px;
+    flex: 1; 
+    padding: 1px;
+}
+
+ .header-config {
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    top: 5px;
+
+} 
+
+.header-config h1{
+    font-size: 20px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 4px;
+}
+
+.header-config p {
+    font-size: 16px;
+    color: #666;
+}
+
+.agendamentos-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.agendamento-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #fafafa;
+    transition: all 0.2s ease;
+}
+
+.agendamento-card:hover {
+    border-color: #d0d0d0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.card-header h2 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 4px;
+}
+
+.card-header p {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.4;
+}
+
+.card-details {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.detail-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.detail-row .label {
+    font-size: 14px;
+    color: #666;
+}
+
+.detail-row .value {
+    font-size: 14px;
+    color: #666;
+}
+
+.detail-row .horario {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+/* .card-actions {
+    margin-left: 20px;
+} */
+
+.Button-editar {
+    background-color: #000;
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.Button-editar:hover {
+    background-color: #333;
+}
+.floating-add-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    border-radius: 50%;
+}
+
+.floating-add-btn .circle {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    z-index: 2;
+}
+
+.floating-add-btn .elipse {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    position: absolute;
+    z-index: 1;
+}
+
+
+
+@media (max-width: 768px) {
+    .configuracao {
+        width: 100%;
+        padding: 0 16px;
+    }
+    
+    .secao1,
+    .secao2 {
+        padding: 20px;
+    }
+    
+    .agendamento-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+    
+    /* .card-actions {
+        margin-left: 0;
+        align-self: flex-start;
+    } */
+    
+    .detail-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+}
